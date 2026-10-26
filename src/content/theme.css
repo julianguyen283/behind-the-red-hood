@@ -1,0 +1,38 @@
+/*
+  THEME — colours, fonts and reading layout
+  =================================================================
+  Change a value here and the whole site updates. Colours are used
+  everywhere through these names (e.g. text-crimson, bg-void).
+*/
+
+@theme static {
+  /* ── Palette ─────────────────────────────────────────── */
+  --color-void: #08080b; /* page background */
+  --color-charcoal: #141016; /* panels, credits, placeholders */
+  --color-blood: #8c1725; /* deep red accents, ornaments */
+  --color-crimson: #c53242; /* highlights, links, the word HOOD */
+  --color-ivory: #e8dfd5; /* text */
+
+  /* Hero forest: tree layers from far (1) to near (4), path and sky */
+  --color-forest-1: #1d171c;
+  --color-forest-2: #140f14;
+  --color-forest-3: #0c090c;
+  --color-forest-4: #050406;
+  --color-forest-sky: #120c11;
+  --color-forest-path: #3a2025;
+
+  /* ── Fonts ───────────────────────────────────────────── */
+  /* To change a font, also update the @fontsource imports in src/main.tsx */
+  --font-display: 'Cormorant Garamond', 'Times New Roman', serif; /* title, headings */
+  --font-fell: 'IM Fell English', 'Cormorant Garamond', serif; /* subtitle, set-apart lines */
+  --font-story: 'Crimson Pro', Georgia, serif; /* the story */
+  --font-ui: 'Inter', system-ui, sans-serif; /* buttons, labels, credits */
+}
+
+:root {
+  /* ── Reading layout ──────────────────────────────────── */
+  --story-width: 36rem; /* width of the text column (~65 characters) */
+  --story-size: clamp(1.14rem, 0.5vw + 1.02rem, 1.34rem); /* story text size */
+  --story-leading: 1.82; /* line spacing */
+  --story-indent: 1.6em; /* first-line indent of each new paragraph */
+}
