@@ -192,6 +192,8 @@ export const soundscape = {
     glass: v('/media/audio/glass.mp3'),
     tear: v('/media/audio/tear.mp3'),
     run: v('/media/audio/run.mp3'),
+    // the author's own voice saying the wrong word, when the reader asks for the answer
+    child: v('/media/audio/answer-child.mp3'),
   } as Record<string, string>,
   /** The faint call after the last line ([[call]] in ending.md). */
   call: v('/media/audio/child-call.mp3'),

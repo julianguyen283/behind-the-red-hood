@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { Inline, smartQuotes } from './Inline'
+import { useAmbientSound } from '../hooks/useAmbientSound'
 
 /**
  * A paragraph written over a remembered one. The remembered line (the
@@ -12,6 +13,7 @@ import { Inline, smartQuotes } from './Inline'
 export function Overwrite({ ghost, text, className }: { ghost: string; text: string; className: string }) {
   const still = useReducedMotion() ?? false
   const [revealed, setRevealed] = useState(false)
+  const { playSfx } = useAmbientSound()
   const box = useRef<HTMLDivElement>(null)
 
   // scrolled past without clicking: reveal it
@@ -33,7 +35,10 @@ export function Overwrite({ ghost, text, className }: { ghost: string; text: str
       {/* the remembered answer, waiting to be answered over */}
       <motion.button
         type="button"
-        onClick={() => setRevealed(true)}
+        onClick={() => {
+          setRevealed(true)
+          playSfx('child') // only heard with sound on
+        }}
         disabled={revealed}
         aria-label="Hear her answer"
         tabIndex={revealed ? -1 : 0}

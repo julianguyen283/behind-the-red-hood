@@ -2,11 +2,18 @@ import { useRef } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { site } from '../content/site'
 import { ForestScene } from './ForestScene'
+import { useAmbientSound } from '../hooks/useAmbientSound'
 import { DrippingTitle } from './DrippingTitle'
 
 const ease = [0.22, 0.61, 0.36, 1] as const
 
-export function Hero({ onEnter }: { onEnter: () => void }) {
+export function Hero({ onEnter }: { onEnter: (withSound: boolean) => void }) {
+  const { enabled, toggle } = useAmbientSound()
+  // the click itself turns the sound on, which is what browsers require
+  const enter = (withSound: boolean) => {
+    if (withSound !== enabled) toggle()
+    onEnter(withSound)
+  }
   const ref = useRef<HTMLElement>(null)
   const still = useReducedMotion() ?? false
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
@@ -63,12 +70,18 @@ export function Hero({ onEnter }: { onEnter: () => void }) {
         >
           <button
             type="button"
-            onClick={onEnter}
+            onClick={() => enter(true)}
             className="group relative overflow-hidden border border-ivory/35 px-10 py-4 font-ui text-[0.7rem] tracking-[0.42em] text-ivory uppercase transition-colors duration-700 hover:border-crimson focus-visible:border-crimson"
           >
             <span className="absolute inset-0 origin-bottom scale-y-0 bg-blood transition-transform duration-700 ease-out group-hover:scale-y-100 group-focus-visible:scale-y-100" />
             <span className="relative pl-[0.42em]">{site.enterLabel}</span>
           </button>
+          <p className="-mt-2 font-ui text-[0.68rem] tracking-[0.08em] text-ivory/50">
+            {site.readingNote} ·{' '}
+            <button type="button" onClick={() => enter(false)} className="underline decoration-ivory/25 underline-offset-4 hover:text-ivory">
+              or enter in silence
+            </button>
+          </p>
           {site.contentNote && <p className="max-w-sm font-ui text-[0.68rem] leading-relaxed text-ivory/45">{site.contentNote}</p>}
         </motion.div>
       </motion.div>

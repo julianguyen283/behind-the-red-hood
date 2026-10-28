@@ -14,12 +14,20 @@ import { DevWordCount } from './components/DevWordCount'
 export default function App() {
   const intro = useRef<HTMLElement>(null)
 
-  const enter = () => {
+  const enter = (withSound: boolean) => {
     const section = intro.current
     if (!section) return
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     section.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' })
-    // Move keyboard focus with the reader: to the play button if a film exists.
+    // Entering with sound starts the film too (inside the click, so the browser allows it).
+    const film = section.querySelector('video')
+    if (withSound && film) {
+      film.muted = false
+      void film.play().catch(() => {})
+      section.focus({ preventScroll: true })
+      return
+    }
+    // Otherwise move keyboard focus to the play button, if the film exists.
     const play = document.getElementById(INTRO_PLAY_ID)
     ;(play ?? section).focus({ preventScroll: true })
   }

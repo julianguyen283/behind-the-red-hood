@@ -28,6 +28,7 @@ from audio import SR, creak, drone, fft_band, place, rng, smooth_env, stereo, wr
 LINE1 = (2.7, 4.65)  # "Is that you, child?"
 LINE2 = (6.9, 13.05)  # "Come in, come in. Shut the door behind you, there's a draught."
 CALL = (3.5, 5.8)  # "Chi-i-ild…?"
+CHILD = (3.76, 4.75)  # the word "child?" at the end of line 1
 BREATHS = [(4.1, 5.4), (9.5, 11.5), (12.3, 13.9), (14.7, 16.9)]
 
 
@@ -112,6 +113,10 @@ def main(src, out):
     call = load(f'{tmp}/call.wav', (CALL[0], CALL[1] + 1.5))
     padded = np.concatenate([np.zeros(int(0.4 * SR)), call, np.zeros(int(2.5 * SR))])
     write(f'{out}/child-call.wav', stereo(padded, 0.9), peak=0.7)
+    # 4. just the word, for the moment the reader asks for her answer (answer-child.wav)
+    word = load(f'{tmp}/lines.wav', CHILD)
+    word = np.concatenate([np.zeros(int(0.1 * SR)), word / (np.abs(word).max() + 1e-9), np.zeros(int(0.6 * SR))])
+    write(f'{out}/answer-child.wav', stereo(word, 0.95), peak=0.75)
     print('author voice done')
 
 

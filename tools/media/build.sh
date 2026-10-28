@@ -61,6 +61,7 @@ if [ -n "${RECORDINGS:-}" ]; then
   ffmpeg -loglevel error -y -i "$TMP/grandmother-voice.wav" -af "loudnorm=I=-16:TP=-1.5:LRA=11" -ar 44100 -b:a 192k $OUT/audio/grandmother-voice.mp3
   ffmpeg -loglevel error -y -i "$TMP/bedroom.wav" -af "loudnorm=I=-20:TP=-2" -ar 44100 -b:a 96k $OUT/audio/bedroom.mp3
   ffmpeg -loglevel error -y -i "$TMP/child-call.wav" -af "loudnorm=I=-22:TP=-3" -ar 44100 -b:a 128k $OUT/audio/child-call.mp3
+  ffmpeg -loglevel error -y -i "$TMP/answer-child.wav" -af "loudnorm=I=-18:TP=-2" -ar 44100 -b:a 128k $OUT/audio/answer-child.mp3
 else
   echo "! no RECORDINGS given: the voice, breathing and call are synthetic stand-ins"
 fi

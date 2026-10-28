@@ -7,6 +7,8 @@ export const site = {
   unit: 'MMCC1050 · Macquarie University',
   year: 2026,
   enterLabel: 'Enter the Woods',
+  /** Shown under the Enter button; that button also turns the sound on. */
+  readingNote: 'With sound, about ten minutes',
   introEyebrow: 'The Path In',
   /** Optional short line shown above the intro film. Leave '' to hide. */
   introLine: '',
