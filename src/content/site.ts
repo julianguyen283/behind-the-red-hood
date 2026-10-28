@@ -64,15 +64,14 @@ export const credits: CreditGroup[] = [
     heading: 'Music & Sound',
     items: [
       {
-        label: 'Soundtrack, effects and ambience',
+        label: 'The voice, the breathing and the call',
         value:
-          'Footsteps, birdsong, knocks, hinge, wind, fire and the background drone are synthesised in code (numpy) by Claude (Anthropic), 28 Oct 2026; no recorded samples.',
+          'Recorded by the author, Thi Thuy Dung Nguyen (Julia). Pitch, room echo, noise reduction and mixing by Claude (Anthropic) with FFmpeg, October 2026.',
       },
       {
-        label: 'The voice from the bedroom',
+        label: 'Soundtrack, effects and ambience',
         value:
-          'Synthetic stand-in voice: Festival Speech Synthesis System 2.5 with the CMU ARCTIC “SLT” HTS voice (Carnegie Mellon University; Nagoya Institute of Technology), processed with FFmpeg. [Replace with “Recorded by the author” if you record it yourself.]',
-        pending: true,
+          'Footsteps, birdsong, knocks, hinge, wind, clock, fire, glass, latch, tearing cloth, heartbeat and the background drone are synthesised in code (numpy) by Claude (Anthropic), October 2026; no recorded samples.',
       },
     ],
   },

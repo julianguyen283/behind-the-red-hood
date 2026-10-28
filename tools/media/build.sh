@@ -3,6 +3,7 @@
 # Needs: python3 + numpy + Pillow, Node + Playwright (with Chromium), ffmpeg,
 # and Festival with the CMU SLT voice (apt install festival festvox-us-slt-hts).
 # Usage: bash tools/media/build.sh
+#        RECORDINGS=/path/to/wavs bash tools/media/build.sh   (use the author's voice: see author_voice.py)
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 TMP=$(mktemp -d)
@@ -51,5 +52,16 @@ save('illustration-2.png', 'illustration-2.webp', (1280, 1600))
 save('intro-video-poster.png', 'intro-poster.webp')
 save('story-2-video-poster.png', 'story-2-poster.webp')
 PY
-rm -rf "$TMP"
 ls -la $OUT/video $OUT/images $OUT/audio
+
+# the author's own voice replaces the synthetic stand-ins
+if [ -n "${RECORDINGS:-}" ]; then
+  echo "· author's recordings"
+  python3 tools/media/author_voice.py "$RECORDINGS" "$TMP"
+  ffmpeg -loglevel error -y -i "$TMP/grandmother-voice.wav" -af "loudnorm=I=-16:TP=-1.5:LRA=11" -ar 44100 -b:a 192k $OUT/audio/grandmother-voice.mp3
+  ffmpeg -loglevel error -y -i "$TMP/bedroom.wav" -af "loudnorm=I=-20:TP=-2" -ar 44100 -b:a 96k $OUT/audio/bedroom.mp3
+  ffmpeg -loglevel error -y -i "$TMP/child-call.wav" -af "loudnorm=I=-22:TP=-3" -ar 44100 -b:a 128k $OUT/audio/child-call.mp3
+else
+  echo "! no RECORDINGS given: the voice, breathing and call are synthetic stand-ins"
+fi
+rm -rf "$TMP"
