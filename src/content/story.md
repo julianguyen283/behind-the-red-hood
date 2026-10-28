@@ -80,6 +80,10 @@ It had been our game when I was small: ears, then eyes, then teeth. She had her 
 
 Not her answer. Not my name. Under the softness was a rasp, as though the throat had been made for other sounds and was only borrowing these.
 
+[[light:bedpost]]
+
+On the bedpost nearest me, the dark wood was scored with fresh, pale scratches, four together, that had not been there in summer.
+
 My face began to smile, the way it did when a man at market said something I did not like and I could think of nothing to say. I let it. Behind me the door was shut, and beyond it lay the whole length of the kitchen. I had seen how fast a dog can cross a yard. I would not get halfway. My fingers found the edge of the dresser.
 
 "You're standing there like a stranger," she said. "Be a good girl and come and sit with me."
@@ -130,7 +134,15 @@ I lifted the lamp by its chimney. The glass was hot enough to hurt. There was on
 
 "All the better—" it began, and the quilt came away.
 
+[[sfx:rise]]
+
+[[light:jolt]]
+
 What rose from the bed was too long for it. The nightcap slid aside, and the face beneath was my grandmother's only in the way a coat on a hook is a person: the shape was there, and no one inside it.
+
+[[sfx:glass]]
+
+[[light:fire]]
 
 I threw the lamp. The chimney broke in my fist as it left me, and the rest burst on the boards between us. The spilled oil caught and ran in a thin line of flame, blue at the root. The thing from the bed came at it and flinched back, and came again along the wall, where the flame was thinnest. My palm was full of glass. I turned my back on it and threw my weight against the window.
 
@@ -138,10 +150,14 @@ I threw the lamp. The chimney broke in my fist as it left me, and the rest burst
 
 The latch would not lift. I struck it with the heel of my cut hand, once, twice, while the light jumped on the walls and the thing beyond the fire made a sound that was not a word. On the third blow the swollen wood gave. Cold air poured in, and I went through head first. Halfway out, something caught my skirt. The cloth drew tight, a long, tearing pain went down the back of my leg, and then the hem ripped free and I fell into the wet grass of the yard.
 
+[[sfx:tear]]
+
 [[room:end]]
 
 [[scene:night]]
 
 
+
+[[sfx:run]]
 
 My leg would not take my weight properly. I ran anyway, half stumbling. At the edge of the yard the brambles took my stockings and then my hood; it snagged and pulled at my throat, and I tore the clasp open and left it hanging behind me, red on the black thorns.[[thread-end]] I did not know whether Grandmother was in that house. I did not know whether the fire had held, or for how long. I knew only the way to the village and the sound of my own breath.

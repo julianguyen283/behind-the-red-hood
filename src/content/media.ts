@@ -140,7 +140,12 @@ export const ambientAudioSrc = v('/media/audio/ambience.mp3')
  *   x, y    position in the picture (0–1, from the left / top)
  *   radius  size of the pool of light (fraction of the picture's width)
  *   dark    how dark everything outside the light is (0 = none, 1 = black)
+ *   inline  true = changes without a gap in the text
+ *   glance  true = the light only drifts here and is pulled back
+ *   jolt    true = the picture jerks once (no change of light)
+ *   tint    colour of the light pool; flicker = firelight
  */
+type Light = { x: number; y: number; radius: number; dark: number; inline?: boolean; glance?: boolean; jolt?: boolean; tint?: string; flicker?: boolean }
 export const room = {
   src: v('/media/images/illustration-1.webp'),
   alt: 'A small bedroom seen from the doorway, lit by one lamp turned very low. A figure lies in the bed against the far wall, face hidden under a nightcap. A dresser, a low window and a tall wardrobe stand in shadow.',
@@ -151,10 +156,12 @@ export const room = {
     head: { x: 0.51, y: 0.31, radius: 0.12, dark: 0.9 },
     all: { x: 0.5, y: 0.5, radius: 1.3, dark: 0.15 },
     spectacles: { x: 0.68, y: 0.4, radius: 0.08, dark: 0.92 },
-    // a glance only: the light drifts here, then is pulled back (see GLIMPSES in StoryBlocks)
-    wardrobe: { x: 0.85, y: 0.33, radius: 0.07, dark: 0.94 },
+    bedpost: { x: 0.38, y: 0.53, radius: 0.07, dark: 0.92 },
+    wardrobe: { x: 0.85, y: 0.33, radius: 0.07, dark: 0.94, inline: true, glance: true },
+    jolt: { x: 0.5, y: 0.5, radius: 0, dark: 0.97, inline: true, glance: true, jolt: true },
+    fire: { x: 0.47, y: 0.86, radius: 0.55, dark: 0.55, inline: true, tint: '255,120,50', flicker: true },
     out: { x: 0.11, y: 0.4, radius: 0, dark: 0.97 },
-  } as Record<string, { x: number; y: number; radius: number; dark: number }>,
+  } as Record<string, Light>,
 }
 
 /**
@@ -181,6 +188,10 @@ export const soundscape = {
   /** One-off sounds triggered by [[sfx:name]] markers. */
   sfx: {
     latch: v('/media/audio/latch.mp3'),
+    rise: v('/media/audio/rise.mp3'),
+    glass: v('/media/audio/glass.mp3'),
+    tear: v('/media/audio/tear.mp3'),
+    run: v('/media/audio/run.mp3'),
   } as Record<string, string>,
   /** The faint call after the last line ([[call]] in ending.md). */
   call: v('/media/audio/child-call.mp3'),

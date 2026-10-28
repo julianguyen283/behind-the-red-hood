@@ -83,6 +83,19 @@
   animation: ember 7s ease-in-out infinite;
 }
 
+/* low, uneven firelight: small changes only, never a flash */
+@keyframes firelight {
+  0%, 100% { opacity: 1; }
+  18% { opacity: 0.82; }
+  33% { opacity: 0.95; }
+  52% { opacity: 0.78; }
+  71% { opacity: 0.92; }
+  86% { opacity: 0.84; }
+}
+.firelight {
+  animation: firelight 1.9s ease-in-out infinite;
+}
+
 @keyframes sway {
   0%, 100% { transform: rotate(-0.4deg); }
   50% { transform: rotate(0.4deg); }

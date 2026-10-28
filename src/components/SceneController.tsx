@@ -39,8 +39,8 @@ export function SceneController() {
       ([entry]) => {
         if (entry.isIntersecting && !called.current) {
           called.current = true
-          // a beat of silence after the last line, then the call
-          setTimeout(playCall, 2200)
+          // as the line is read, the voice calls
+          setTimeout(playCall, 600)
         }
       },
       { threshold: 1 },

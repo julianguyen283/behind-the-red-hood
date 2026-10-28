@@ -283,6 +283,82 @@ def latch(out):
     write(out, stereo(track, 0.95), peak=0.85)
 
 
+def rise(out):
+    """What rose from the bed: a low swell and the bed timbers groaning, cut off."""
+    T = 3.2
+    n = int(T * SR)
+    t = t_axis(T)
+    f = 38 + 14 * (t / T) ** 2
+    sub = np.sin(2 * np.pi * np.cumsum(f) / SR) * smooth_env(n, [(0, 0), (2.4, 1), (2.75, 1), (2.8, 0), (T, 0)])
+    track = 0.9 * sub
+    place(track, creak(2.2, 30, 90, 900), 0.4, 0.55)
+    write(out, stereo(track, 0.95), peak=0.85)
+
+
+def glass(out):
+    """The lamp thrown: glass bursting on the boards, then oil catching with a soft rush."""
+    T = 3.0
+    n = int(T * SR)
+    track = np.zeros(n)
+    burst = fft_band(rng.standard_normal(int(0.4 * SR)) * np.exp(-t_axis(0.4) * 14), 2000, 12000)
+    place(track, burst / (np.abs(burst).max() + 1e-9), 0.1, 0.8)
+    for _ in range(40):  # shards ringing as they scatter
+        d = rng.uniform(0.04, 0.12)
+        tt = t_axis(d)
+        ping = np.sin(2 * np.pi * rng.uniform(3000, 9000) * tt) * np.exp(-tt * rng.uniform(40, 90))
+        place(track, ping, 0.1 + rng.uniform(0, 0.9), rng.uniform(0.05, 0.2))
+    place(track, knock(), 0.1, 0.5)
+    rush = fft_band(rng.standard_normal(n), 80, 900) * smooth_env(n, [(0, 0), (0.5, 0), (0.9, 0.7), (1.6, 0.35), (T, 0.15)])
+    track += 0.6 * rush / (np.abs(rush).max() + 1e-9)
+    crack = np.zeros(n)
+    hits = rng.integers(int(0.8 * SR), n, 200)
+    crack[hits] = rng.uniform(-1, 1, hits.size) ** 3
+    track += 0.25 * fft_band(crack, 1500, 7000)
+    write(out, stereo(track), peak=0.9)
+
+
+def tear(out):
+    """Cloth ripping as she goes through the window, then the fall into wet grass."""
+    T = 2.2
+    track = np.zeros(int(T * SR))
+    d = 0.7
+    tt = t_axis(d)
+    rip = fft_band(rng.standard_normal(tt.size), 900, 6500) * (0.6 + 0.4 * np.sign(np.sin(2 * np.pi * 38 * tt))) * smooth_env(tt.size, [(0, 0), (0.05, 1), (0.6, 0.8), (d, 0)])
+    place(track, rip / (np.abs(rip).max() + 1e-9), 0.1, 0.8)
+    t2 = t_axis(0.5)
+    thud = np.sin(2 * np.pi * 60 * t2) * np.exp(-t2 * 14) + 0.4 * fft_band(rng.standard_normal(t2.size) * np.exp(-t2 * 20), 200, 2500)
+    place(track, thud, 1.05, 0.9)
+    place(track, fft_band(rng.standard_normal(int(0.6 * SR)) * np.exp(-t_axis(0.6) * 6), 2000, 8000), 1.1, 0.12)  # wet grass
+    write(out, stereo(track), peak=0.85)
+
+
+def run(out):
+    """Running hurt: heartbeat, ragged breath, uneven steps, the hood snagging in the brambles."""
+    T = 7.5
+    n = int(T * SR)
+    track = np.zeros(n)
+    tb = t_axis(0.12)
+    beat = np.sin(2 * np.pi * 48 * tb) * np.exp(-tb * 30)
+    at = 0.1
+    while at < T - 0.5:
+        place(track, beat, at, 0.9)
+        place(track, beat, at + 0.18, 0.6)
+        at += 0.52
+    at = 0.3
+    while at < T - 1:
+        place(track, breath(0.9, 0.9), at, 0.35)
+        at += rng.uniform(0.85, 1.1)
+    at, k = 0.2, 0
+    while at < T - 0.8:
+        place(track, leaf_step(0.9 if k % 2 else 0.55), at, 0.45)  # the hurt leg lands lighter
+        at += 0.33 if k % 2 else 0.45
+        k += 1
+    snag = fft_band(rng.standard_normal(int(0.35 * SR)), 1200, 7000) * smooth_env(int(0.35 * SR), [(0, 0), (0.02, 1), (0.3, 0.6), (0.35, 0)])
+    place(track, snag / (np.abs(snag).max() + 1e-9), 4.6, 0.5)
+    track *= smooth_env(n, [(0, 1), (T - 1.5, 1), (T, 0)])
+    write(out, stereo(track), peak=0.85)
+
+
 if __name__ == '__main__':
     d = sys.argv[1]
     ambience(f'{d}/ambience.wav')
@@ -293,4 +369,6 @@ if __name__ == '__main__':
     bedroom(f'{d}/bedroom.wav')
     night(f'{d}/night.wav')
     latch(f'{d}/latch.wav')
+    for fx in (rise, glass, tear, run):
+        fx(f'{d}/{fx.__name__}.wav')
     print('audio done')

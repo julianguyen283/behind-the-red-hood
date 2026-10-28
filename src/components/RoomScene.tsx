@@ -21,6 +21,8 @@ export function RoomScene({ children }: { children: ReactNode }) {
   const ty = useSpring(start.y, spring)
   const radius = useSpring(start.radius, spring)
   const dark = useSpring(start.dark, spring)
+  const zoom = useSpring(1, { stiffness: 400, damping: 12 })
+  const [lightName, setLightName] = useState('lamp')
 
   // which light is active: the last marker the reader has passed
   useEffect(() => {
@@ -30,6 +32,15 @@ export function RoomScene({ children }: { children: ReactNode }) {
     let glance: number | undefined
     const go = (name: string) => {
       const l = room.lights[name] ?? start
+      if (l.jolt) {
+        // a single jerk of the frame; the light itself stays where it was
+        if (!still) {
+          zoom.set(1.07)
+          window.setTimeout(() => zoom.set(1), 90)
+        }
+        return
+      }
+      setLightName(name)
       for (const [mv, value] of [[tx, l.x], [ty, l.y], [radius, l.radius], [dark, l.dark]] as const) {
         if (still) mv.jump(value)
         else mv.set(value)
@@ -37,12 +48,14 @@ export function RoomScene({ children }: { children: ReactNode }) {
     }
     const update = () => {
       frame = 0
-      const reading = window.innerHeight * 0.8 // a gap entering the screen moves the light
+      // a gap entering the screen moves the light; a change inside the text waits until it is read
+      const gapLine = window.innerHeight * 0.8
+      const textLine = window.innerHeight * 0.5
       let name = 'lamp'
       let glimpse = ''
       section.current?.querySelectorAll<HTMLElement>('[data-light]').forEach((m) => {
-        if (m.getBoundingClientRect().top > reading) return
-        if (m.dataset.glimpse !== undefined) glimpse = m.dataset.light!
+        if (m.getBoundingClientRect().top > (m.dataset.inline !== undefined ? textLine : gapLine)) return
+        if (m.dataset.glance !== undefined) glimpse = m.dataset.light!
         else name = m.dataset.light!
       })
       // a glance: drift to the spot, hold a breath, get pulled back
@@ -73,7 +86,7 @@ export function RoomScene({ children }: { children: ReactNode }) {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onResize)
     }
-  }, [tx, ty, radius, dark, still, start])
+  }, [tx, ty, radius, dark, zoom, still, start])
 
   // cover the screen with the picture, panned towards the light
   const scale = Math.max(size.w / room.width, size.h / room.height)
@@ -86,14 +99,21 @@ export function RoomScene({ children }: { children: ReactNode }) {
   const r1 = useTransform(radius, (r) => r * dw)
   const r0 = useTransform(radius, (r) => r * dw * 0.3)
   const shade = useMotionTemplate`radial-gradient(circle at ${sx}px ${sy}px, rgba(8,8,11,0) ${r0}px, rgba(8,8,11,${dark}) ${r1}px)`
-  const warmth = useMotionTemplate`radial-gradient(circle at ${sx}px ${sy}px, rgba(255,170,90,0.14), rgba(255,170,90,0) ${r1}px)`
+  const tint = room.lights[lightName]?.tint ?? '255,170,90'
+  const glowAlpha = room.lights[lightName]?.tint ? 0.32 : 0.14
+  const warmth = useMotionTemplate`radial-gradient(circle at ${sx}px ${sy}px, rgba(${tint},${glowAlpha}), rgba(${tint},0) ${r1}px)`
 
   return (
     <section ref={section} className="relative mx-[calc(50%-50vw)]">
       <div aria-hidden="true" className="sticky top-0 h-[100svh] overflow-hidden">
-        <motion.img src={room.src} alt="" className="absolute max-w-none" style={{ left, top, width: dw, height: dh }} />
-        <motion.div className="absolute inset-0" style={{ background: shade }} />
-        <motion.div className="absolute inset-0 mix-blend-screen" style={{ background: warmth }} />
+        <motion.div className="absolute inset-0" style={{ scale: zoom }}>
+          <motion.img src={room.src} alt="" className="absolute max-w-none" style={{ left, top, width: dw, height: dh }} />
+          <motion.div className="absolute inset-0" style={{ background: shade }} />
+          <motion.div
+            className={`absolute inset-0 mix-blend-screen ${room.lights[lightName]?.flicker ? 'firelight' : ''}`}
+            style={{ background: warmth }}
+          />
+        </motion.div>
         <div className="absolute inset-x-0 top-0 h-[18svh] bg-gradient-to-b from-void to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-[18svh] bg-gradient-to-t from-void to-transparent" />
       </div>

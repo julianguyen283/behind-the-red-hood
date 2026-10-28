@@ -7,10 +7,9 @@ import { Overwrite } from './Overwrite'
 import { Reveal } from './Reveal'
 import { RoomPanel, RoomPause, RoomScene } from './RoomScene'
 import { StoryMedia } from './StoryMedia'
+import { room } from '../content/media'
 
 const column = 'mx-auto w-full max-w-[var(--story-width)]'
-/** lights that only glance somewhere and return, without a gap in the text */
-const GLIMPSES = new Set(['wardrobe'])
 
 function renderBlock(block: StoryBlock, i: number, dropCap: boolean): ReactNode {
   switch (block.type) {
@@ -49,7 +48,7 @@ function renderBlock(block: StoryBlock, i: number, dropCap: boolean): ReactNode 
       return <StoryMedia key={i} id={block.id} />
     // invisible markers, read while scrolling
     case 'light':
-      return <div key={i} data-light={block.target} data-glimpse={GLIMPSES.has(block.target) ? '' : undefined} aria-hidden="true" />
+      return <div key={i} data-light={block.target} data-glance={room.lights[block.target]?.glance ? '' : undefined} data-inline={room.lights[block.target]?.inline ? '' : undefined} aria-hidden="true" />
     case 'scene':
       return <div key={i} data-scene={block.name} aria-hidden="true" />
     case 'call':
@@ -75,7 +74,7 @@ function renderRoom(blocks: { block: StoryBlock; i: number }[]): ReactNode {
     if (block.type === 'room' && block.edge === 'pause') {
       flush()
       out.push(<RoomPause key={i} />)
-    } else if (block.type === 'light' && !GLIMPSES.has(block.target) && (panel.length || out.length)) {
+    } else if (block.type === 'light' && !room.lights[block.target]?.inline && (panel.length || out.length)) {
       // the light moves in a gap between panels, so the reader sees it go
       flush()
       out.push(
