@@ -7,6 +7,7 @@ import { INTRO_PLAY_ID, IntroFilm } from './components/IntroFilm'
 import { Story, storyBlocks } from './components/Story'
 import { Ending, endingBlocks } from './components/Ending'
 import { Credits } from './components/Credits'
+import { RedThread } from './components/RedThread'
 import { DevWordCount } from './components/DevWordCount'
 
 export default function App() {
@@ -29,7 +30,8 @@ export default function App() {
           Skip to the story
         </a>
         <Header />
-        <main id="top">
+        <main id="top" className="relative">
+          <RedThread />
           <Hero onEnter={enter} />
           <IntroFilm ref={intro} />
           <Story />

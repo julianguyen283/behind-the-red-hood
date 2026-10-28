@@ -56,7 +56,7 @@ export const credits: CreditGroup[] = [
         pending: true,
       },
       {
-        label: 'Opening film & Video 2',
+        label: 'Opening film',
         value:
           'AI-generated: painted procedurally in code (HTML canvas) by Claude (Anthropic) to the author’s media brief, 28 Oct 2026. Source code in tools/media/ in the project repository.',
       },

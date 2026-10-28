@@ -12,9 +12,6 @@ The current files are AI-generated samples, made in code by the scripts in `tool
 | `captions/intro.vtt` | Opening film sound captions |
 | `audio/grandmother-voice.mp3` | The voice from the bedroom (22 s) |
 | `images/illustration-1.webp` | Illustration 1: the bedroom from the doorway |
-| `video/story-2.mp4` | Video 2: the room behind Red (10 s) |
-| `images/story-2-poster.webp` | First frame of Video 2 |
-| `captions/story-2.vtt` | Video 2 sound captions |
 | `images/illustration-2.webp` | Illustration 2: the hood on the thorns |
 | `audio/ambience.mp3` | Background sound for the Sound on / off button (64 s loop) |
 

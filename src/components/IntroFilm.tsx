@@ -22,7 +22,7 @@ function ShotList() {
 
 export const IntroFilm = forwardRef<HTMLElement>(function IntroFilm(_, ref) {
   return (
-    <section ref={ref} id="intro" tabIndex={-1} aria-labelledby="intro-heading" className="relative bg-void px-5 py-24 outline-none md:py-36">
+    <section ref={ref} id="intro" data-thread-start tabIndex={-1} aria-labelledby="intro-heading" className="relative bg-void px-5 py-24 outline-none md:py-36">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-void to-transparent" />
       <Reveal className="mx-auto mb-10 max-w-3xl text-center md:mb-14">
         <h2 id="intro-heading" className="font-ui text-[0.65rem] tracking-[0.5em] text-crimson uppercase">

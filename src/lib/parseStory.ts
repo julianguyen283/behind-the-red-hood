@@ -32,7 +32,7 @@ export function parseStory(raw: string): StoryBlock[] {
 export function countWords(blocks: StoryBlock[]): number {
   return blocks.reduce((n, b) => {
     if (b.type !== 'p' && b.type !== 'line') return n
-    return n + b.text.replace(/\*/g, '').split(/\s+/).filter(Boolean).length
+    return n + b.text.replace(/\[\[[^\]]*\]\]|\*/g, '').split(/\s+/).filter(Boolean).length
   }, 0)
 }
 

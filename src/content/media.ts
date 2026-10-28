@@ -45,11 +45,18 @@ export type AudioMedia = {
   placeholderNote: string
 }
 
+/**
+ * Bump this number whenever you replace a media file with one of the same
+ * name, so browsers fetch the new file instead of a cached old one.
+ */
+export const MEDIA_VERSION = 3
+const v = (path: string) => `${path}?v=${MEDIA_VERSION}`
+
 export const introVideo: VideoMedia = {
   kind: 'video',
-  src: '/media/video/intro.mp4',
-  poster: '/media/images/intro-poster.webp',
-  captions: '/media/captions/intro.vtt',
+  src: v('/media/video/intro.mp4'),
+  poster: v('/media/images/intro-poster.webp'),
+  captions: v('/media/captions/intro.vtt'),
   title: 'Introductory first-person sequence: the walk to the cottage',
   aspect: '16 / 9',
   placeholderNote: 'Add the first-person POV introduction at /public/media/video/intro.mp4',
@@ -75,7 +82,6 @@ export const introShotList = [
  * [[audio:audio-1]]. Current placement (from the story draft):
  *   audio-1 → after "Then a voice came from the bedroom."
  *   image-1 → after "Be a good girl and come and sit with me."
- *   video-2 → after Red falls into the yard (captioned, no flashing)
  *   image-2 → after the final line (rendered in the Ending section)
  * To add another piece of media, add an entry here with a new id and
  * put its marker in story.md.
@@ -83,7 +89,7 @@ export const introShotList = [
 export const storyMedia: Record<string, ImageMedia | VideoMedia | AudioMedia> = {
   'audio-1': {
     kind: 'audio',
-    src: '/media/audio/grandmother-voice.mp3',
+    src: v('/media/audio/grandmother-voice.mp3'),
     title: 'Listen at the door',
     credit: '',
     transcript: [
@@ -97,7 +103,7 @@ export const storyMedia: Record<string, ImageMedia | VideoMedia | AudioMedia> = 
   },
   'image-1': {
     kind: 'image',
-    src: '/media/images/illustration-1.webp',
+    src: v('/media/images/illustration-1.webp'),
     alt: 'A small bedroom seen from the doorway, lit by one lamp turned very low. A figure lies in the bed against the far wall, face hidden under a nightcap. A dresser, a low window and a tall wardrobe stand in shadow.',
     caption: '',
     credit: '',
@@ -105,21 +111,9 @@ export const storyMedia: Record<string, ImageMedia | VideoMedia | AudioMedia> = 
     enlarge: true,
     placeholderNote: 'Illustration 1 → /public/media/images/illustration-1.webp',
   },
-  'video-2': {
-    kind: 'video',
-    src: '/media/video/story-2.mp4',
-    poster: '/media/images/story-2-poster.webp',
-    captions: '/media/captions/story-2.vtt',
-    title: 'The bedroom behind Red: the open window, the dying fire and the wardrobe in the wind',
-    description: '',
-    caption: '',
-    credit: '',
-    aspect: '16 / 9',
-    placeholderNote: 'Video 2 (8–10 s) → /public/media/video/story-2.mp4',
-  },
   'image-2': {
     kind: 'image',
-    src: '/media/images/illustration-2.webp',
+    src: v('/media/images/illustration-2.webp'),
     alt: 'An empty red hood hangs on black thorns at the edge of the forest. Far behind it, one window of the cottage glows faintly.',
     caption: '',
     credit: '',
@@ -134,4 +128,4 @@ export const storyMedia: Record<string, ImageMedia | VideoMedia | AudioMedia> = 
  * If this file is missing, a soft wind texture is synthesised in the
  * browser with the Web Audio API instead.
  */
-export const ambientAudioSrc = '/media/audio/ambience.mp3'
+export const ambientAudioSrc = v('/media/audio/ambience.mp3')
