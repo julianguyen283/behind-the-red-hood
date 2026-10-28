@@ -3,7 +3,7 @@
 export const site = {
   title: 'Behind the Red Hood',
   subtitle: 'A Gothic Retelling of Little Red Riding Hood',
-  author: '[Your Name]',
+  author: 'Thi Thuy Dung Nguyen (Julia)',
   unit: 'MMCC1050 · Macquarie University',
   year: 2026,
   enterLabel: 'Enter the Woods',
@@ -32,7 +32,7 @@ export const credits: CreditGroup[] = [
   {
     heading: 'Creative Authorship',
     items: [
-      { label: 'Story', value: '[Your Name]', pending: true },
+      { label: 'Story', value: 'Thi Thuy Dung Nguyen (Julia)' },
       { label: 'Concept & art direction', value: '[Your Name]', pending: true },
       {
         label: 'Website',
