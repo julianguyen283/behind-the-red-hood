@@ -7,7 +7,7 @@ import { useAmbientSound } from '../hooks/useAmbientSound'
  * reader reaches it with sound on.
  */
 export function SceneController() {
-  const { enabled, setScene, playCall } = useAmbientSound()
+  const { enabled, setScene, playCall, playSfx } = useAmbientSound()
   const called = useRef(false)
 
   useEffect(() => {
@@ -48,6 +48,24 @@ export function SceneController() {
     io.observe(marker)
     return () => io.disconnect()
   }, [enabled, playCall])
+
+  // one-off sounds: each plays once, when its marker comes into view with sound on
+  useEffect(() => {
+    if (!enabled) return
+    const played = new Set<Element>()
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting || played.has(e.target)) continue
+          played.add(e.target)
+          playSfx((e.target as HTMLElement).dataset.sfx!)
+        }
+      },
+      { rootMargin: '0px 0px -45% 0px' },
+    )
+    document.querySelectorAll('[data-sfx]').forEach((m) => io.observe(m))
+    return () => io.disconnect()
+  }, [enabled, playSfx])
 
   return null
 }

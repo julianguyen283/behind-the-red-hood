@@ -26,20 +26,38 @@ export function RoomScene({ children }: { children: ReactNode }) {
   useEffect(() => {
     let frame = 0
     let active = ''
-    const update = () => {
-      frame = 0
-      const reading = window.innerHeight * 0.8 // a gap entering the screen moves the light
-      let name = 'lamp'
-      section.current?.querySelectorAll<HTMLElement>('[data-light]').forEach((m) => {
-        if (m.getBoundingClientRect().top <= reading) name = m.dataset.light!
-      })
-      if (name === active) return
-      active = name
+    let glanced = ''
+    let glance: number | undefined
+    const go = (name: string) => {
       const l = room.lights[name] ?? start
       for (const [mv, value] of [[tx, l.x], [ty, l.y], [radius, l.radius], [dark, l.dark]] as const) {
         if (still) mv.jump(value)
         else mv.set(value)
       }
+    }
+    const update = () => {
+      frame = 0
+      const reading = window.innerHeight * 0.8 // a gap entering the screen moves the light
+      let name = 'lamp'
+      let glimpse = ''
+      section.current?.querySelectorAll<HTMLElement>('[data-light]').forEach((m) => {
+        if (m.getBoundingClientRect().top > reading) return
+        if (m.dataset.glimpse !== undefined) glimpse = m.dataset.light!
+        else name = m.dataset.light!
+      })
+      // a glance: drift to the spot, hold a breath, get pulled back
+      if (glimpse !== glanced) {
+        glanced = glimpse
+        if (glimpse && !still) {
+          go(glimpse)
+          window.clearTimeout(glance)
+          glance = window.setTimeout(() => go(active), 1500)
+          return
+        }
+      }
+      if (name === active) return
+      active = name
+      go(name)
     }
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update)
@@ -51,6 +69,7 @@ export function RoomScene({ children }: { children: ReactNode }) {
     window.addEventListener('resize', onResize)
     return () => {
       cancelAnimationFrame(frame)
+      window.clearTimeout(glance)
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onResize)
     }

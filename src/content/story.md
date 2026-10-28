@@ -16,6 +16,10 @@
       [[light:lamp|head|spectacles|all|out]] moves the lamplight (media.ts → room);
       [[room:pause]] leaves an open gap where the whole room can be seen
     • [[scene:name]]          → cross-fades the soundscape (media.ts → soundscape)
+    • [[sfx:name]]            → plays a one-off sound once (media.ts → soundscape.sfx)
+    • [[ghost:"a line"]]      → the line shows faintly, is struck through, and the
+                                next paragraph writes over it
+    • [[light:wardrobe]]      → the light glances at the wardrobe and is pulled back
     • [[thread-end]]         → inside a paragraph: the exact point where the
                                red thread stops (the hood is torn away)
     • [[sense:ears]] / [[sense:eyes]] / [[sense:teeth]]
@@ -70,6 +74,8 @@ I very nearly went. My foot had moved before I made it stop.
 
 It had been our game when I was small: ears, then eyes, then teeth. She had her own answer for each, and the first was always "All the better to hear you sing, my lark," and then she would make me sing until I laughed too much to finish.
 
+[[ghost:"All the better to hear you sing, my lark."]]
+
 "All the better to hear you with, child."
 
 Not her answer. Not my name. Under the softness was a rasp, as though the throat had been made for other sounds and was only borrowing these.
@@ -110,6 +116,8 @@ The voice had not changed, but the room had. The shape under the quilt had gone 
 
 "Then bring the lamp here, where I can see you properly."
 
+[[light:wardrobe]]
+
 So it knew. Perhaps it had known since I stopped on the threshold, and had only been waiting to see what I would do. In the corner, the wardrobe door stood a hand's width open. I did not look at it. If I looked at it, I would not be able to do anything else.
 
 I lifted the lamp by its chimney. The glass was hot enough to hurt. There was one question left in the game, and it had answered the other two the way the old rhyme goes, quickly and with pleasure, as if it had been waiting all evening to say them. It would want to say this one most of all.
@@ -125,6 +133,8 @@ I lifted the lamp by its chimney. The glass was hot enough to hurt. There was on
 What rose from the bed was too long for it. The nightcap slid aside, and the face beneath was my grandmother's only in the way a coat on a hook is a person: the shape was there, and no one inside it.
 
 I threw the lamp. The chimney broke in my fist as it left me, and the rest burst on the boards between us. The spilled oil caught and ran in a thin line of flame, blue at the root. The thing from the bed came at it and flinched back, and came again along the wall, where the flame was thinnest. My palm was full of glass. I turned my back on it and threw my weight against the window.
+
+[[sfx:latch]]
 
 The latch would not lift. I struck it with the heel of my cut hand, once, twice, while the light jumped on the walls and the thing beyond the fire made a sound that was not a word. On the third blow the swollen wood gave. Cold air poured in, and I went through head first. Halfway out, something caught my skirt. The cloth drew tight, a long, tearing pain went down the back of my leg, and then the hem ripped free and I fell into the wet grass of the yard.
 

@@ -1,5 +1,5 @@
 export type StoryBlock =
-  | { type: 'p'; text: string }
+  | { type: 'p'; text: string; ghost?: string }
   | { type: 'line'; text: string }
   | { type: 'pause' }
   | { type: 'media'; id: string }
@@ -8,6 +8,8 @@ export type StoryBlock =
   | { type: 'light'; target: string }
   | { type: 'scene'; name: string }
   | { type: 'call' }
+  | { type: 'sfx'; name: string }
+  | { type: 'ghost'; text: string }
 
 export type Sense = 'ears' | 'eyes' | 'teeth'
 
@@ -18,10 +20,12 @@ const ROOM = /^\[\[room:(start|end|pause)\]\]$/
 const LIGHT = /^\[\[light:([\w-]+)\]\]$/
 const SCENE = /^\[\[scene:([\w-]+)\]\]$/
 const CALL = /^\[\[call\]\]$/
+const SFX = /^\[\[sfx:([\w-]+)\]\]$/
+const GHOST = /^\[\[ghost:(.+)\]\]$/
 
 /** Turns the plain-text story format (see story.md) into typed blocks. */
 export function parseStory(raw: string): StoryBlock[] {
-  return raw
+  const blocks = raw
     .replace(/<!--[\s\S]*?-->/g, '')
     .split(/\n\s*\n/)
     .map((chunk) => chunk.trim().replace(/\s*\n\s*/g, ' '))
@@ -36,10 +40,19 @@ export function parseStory(raw: string): StoryBlock[] {
       if ((m = chunk.match(LIGHT))) return { type: 'light', target: m[1] }
       if ((m = chunk.match(SCENE))) return { type: 'scene', name: m[1] }
       if (CALL.test(chunk)) return { type: 'call' }
+      if ((m = chunk.match(SFX))) return { type: 'sfx', name: m[1] }
+      if ((m = chunk.match(GHOST))) return { type: 'ghost', text: m[1] }
       if (PAUSE.test(chunk)) return { type: 'pause' }
       if (chunk.startsWith('>')) return { type: 'line', text: chunk.replace(/^>\s*/, '') }
       return { type: 'p', text: chunk }
     })
+  // a [[ghost:...]] line is drawn under the paragraph that follows it
+  return blocks.flatMap((b, i): StoryBlock[] => {
+    if (b.type === 'ghost') return []
+    const prev = blocks[i - 1]
+    if (b.type === 'p' && prev?.type === 'ghost') return [{ ...b, ghost: prev.text }]
+    return [b]
+  })
 }
 
 export function countWords(blocks: StoryBlock[]): number {

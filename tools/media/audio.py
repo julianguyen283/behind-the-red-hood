@@ -260,6 +260,29 @@ def night(out):
     write(out, stereo(seamless(w, L, X)), peak=0.85)
 
 
+def latch(out):
+    """Three blows on a swollen window latch; on the third the wood gives."""
+    T = 3.6
+    track = np.zeros(int(T * SR))
+    t = t_axis(0.5)
+
+    def blow(heavy):
+        body = sum(a * np.sin(2 * np.pi * f * t) * np.exp(-t * d) for f, a, d in [(95, 1.0, 18), (180, 0.6, 26), (330, 0.3, 40)])
+        slap = fft_band(rng.standard_normal(t.size) * np.exp(-t * 120), 300, 3500)
+        rattle = sum(np.sin(2 * np.pi * f * t) * np.exp(-t * 35) for f in (2480, 3710, 5150)) * 0.12
+        x = body + 0.5 * slap / (np.abs(slap).max() + 1e-9) + rattle
+        return x * (1.25 if heavy else 1.0)
+
+    place(track, blow(False), 0.25)
+    place(track, blow(False), 1.05)
+    place(track, blow(True), 2.05)
+    # the swollen wood gives: a dry crack and a short complaint
+    crack = fft_band(rng.standard_normal(int(0.25 * SR)) * np.exp(-t_axis(0.25) * 30), 700, 5000)
+    place(track, crack / (np.abs(crack).max() + 1e-9), 2.12, 0.7)
+    place(track, creak(0.7, 90, 260, 2600), 2.25, 0.35)
+    write(out, stereo(track, 0.95), peak=0.85)
+
+
 if __name__ == '__main__':
     d = sys.argv[1]
     ambience(f'{d}/ambience.wav')
@@ -269,4 +292,5 @@ if __name__ == '__main__':
     kitchen(f'{d}/kitchen.wav')
     bedroom(f'{d}/bedroom.wav')
     night(f'{d}/night.wav')
+    latch(f'{d}/latch.wav')
     print('audio done')

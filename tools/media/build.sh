@@ -25,6 +25,7 @@ ffmpeg -loglevel error -y -i "$TMP/ambience.wav" -af "loudnorm=I=-18:TP=-2" -ar 
 ffmpeg -loglevel error -y -i "$TMP/kitchen.wav" -af "loudnorm=I=-26:TP=-3" -ar 44100 -b:a 96k $OUT/audio/kitchen.mp3
 ffmpeg -loglevel error -y -i "$TMP/bedroom.wav" -af "loudnorm=I=-20:TP=-2" -ar 44100 -b:a 96k $OUT/audio/bedroom.mp3
 ffmpeg -loglevel error -y -i "$TMP/night.wav" -af "loudnorm=I=-19:TP=-2" -ar 44100 -b:a 96k $OUT/audio/night.mp3
+ffmpeg -loglevel error -y -i "$TMP/latch.wav" -af "loudnorm=I=-16:TP=-1.5" -ar 44100 -b:a 128k $OUT/audio/latch.mp3
 # the faint call after the last line (stand-in until the author's recording is cut in)
 echo "Child?" | text2wave -eval "(voice_cmu_us_slt_arctic_hts)" -o "$TMP/call.wav"
 ffmpeg -loglevel error -y -i "$TMP/call.wav" -af "adelay=600|600,aresample=44100,asetrate=44100*0.86,aresample=44100,atempo=0.85,lowpass=f=2600,highpass=f=150,aecho=0.8:0.7:120|260|420:0.35|0.25|0.15,apad=pad_dur=3,loudnorm=I=-22:TP=-3" -ac 2 -ar 44100 -b:a 128k $OUT/audio/child-call.mp3

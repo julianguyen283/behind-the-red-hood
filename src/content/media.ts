@@ -151,6 +151,8 @@ export const room = {
     head: { x: 0.51, y: 0.31, radius: 0.12, dark: 0.9 },
     all: { x: 0.5, y: 0.5, radius: 1.3, dark: 0.15 },
     spectacles: { x: 0.68, y: 0.4, radius: 0.08, dark: 0.92 },
+    // a glance only: the light drifts here, then is pulled back (see GLIMPSES in StoryBlocks)
+    wardrobe: { x: 0.85, y: 0.33, radius: 0.07, dark: 0.94 },
     out: { x: 0.11, y: 0.4, radius: 0, dark: 0.97 },
   } as Record<string, { x: number; y: number; radius: number; dark: number }>,
 }
@@ -176,6 +178,10 @@ export const soundscape = {
     silence: {},
     night: { night: 1 },
   } as Record<string, Record<string, number>>,
+  /** One-off sounds triggered by [[sfx:name]] markers. */
+  sfx: {
+    latch: v('/media/audio/latch.mp3'),
+  } as Record<string, string>,
   /** The faint call after the last line ([[call]] in ending.md). */
   call: v('/media/audio/child-call.mp3'),
 }

@@ -10,9 +10,11 @@ type SoundState = {
   setScene: (name: string) => void
   /** Play the faint call after the last line (only if sound is on). */
   playCall: () => void
+  /** Play a one-off sound effect from soundscape.sfx (only if sound is on). */
+  playSfx: (name: string) => void
 }
 
-const SoundContext = createContext<SoundState>({ enabled: false, toggle: () => {}, setDucked: () => {}, setScene: () => {}, playCall: () => {} })
+const SoundContext = createContext<SoundState>({ enabled: false, toggle: () => {}, setDucked: () => {}, setScene: () => {}, playCall: () => {}, playSfx: () => {} })
 
 /** Background level when sound is on (0–1). ~12%: atmosphere, never in the way. */
 const LEVEL = 0.12
@@ -209,17 +211,20 @@ export function SoundProvider({ children }: { children: ReactNode }) {
     [mixScene],
   )
 
-  const playCall = useCallback(() => {
+  /** One-off sounds sit outside the low ambience level so they can still be heard. */
+  const oneShot = useCallback((src: string | undefined, level: number) => {
     const ctx = ctxRef.current
-    if (!ctx || !enabledRef.current) return
-    const audio = new Audio(soundscape.call)
+    if (!ctx || !src || !enabledRef.current) return
+    const audio = new Audio(src)
     const gain = ctx.createGain()
-    gain.gain.value = 0.45 // faint, and outside the ambience level so it can still be heard
+    gain.gain.value = level
     ctx.createMediaElementSource(audio).connect(gain).connect(ctx.destination)
     void audio.play().catch(() => {})
   }, [])
+  const playCall = useCallback(() => oneShot(soundscape.call, 0.45), [oneShot])
+  const playSfx = useCallback((name: string) => oneShot(soundscape.sfx[name], 0.55), [oneShot])
 
-  return <SoundContext.Provider value={{ enabled, toggle, setDucked, setScene, playCall }}>{children}</SoundContext.Provider>
+  return <SoundContext.Provider value={{ enabled, toggle, setDucked, setScene, playCall, playSfx }}>{children}</SoundContext.Provider>
 }
 
 export const useAmbientSound = () => useContext(SoundContext)
