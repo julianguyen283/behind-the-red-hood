@@ -98,10 +98,18 @@
   line-height: var(--story-leading);
   color: color-mix(in srgb, var(--color-ivory) 90%, transparent);
   hanging-punctuation: first;
-  hyphens: manual;
 }
-.story-prose p + p {
+/* Story paragraphs: first line indented, the rest justified like a printed book.
+   (Only direct paragraphs, so set-apart lines and the transcript keep their own alignment.) */
+.story-prose > p {
+  text-align: justify;
+  text-align-last: left;
   text-indent: var(--story-indent);
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+.story-prose > p.drop-cap {
+  text-indent: 0;
 }
 .story-prose em {
   color: var(--color-ivory);
