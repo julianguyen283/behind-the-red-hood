@@ -25,7 +25,7 @@ ffmpeg -loglevel error -y -i "$TMP/ambience.wav" -af "loudnorm=I=-18:TP=-2" -ar 
 echo "· pictures and films (headless Chromium)"
 node tools/media/render.cjs "$TMP" all
 
-mux() { ffmpeg -loglevel error -y -i "$1" -i "$2" -map 0:v -map 1:a -c:v copy -c:a aac -b:a 128k -af "loudnorm=I=-18:TP=-1.5" -shortest -movflags +faststart "$3"; }
+mux() { ffmpeg -loglevel error -y -i "$1" -i "$2" -map 0:v -map 1:a -c:v copy -c:a aac -b:a 128k -af "loudnorm=I=-18:TP=-1.5" -ar 48000 -shortest -movflags +faststart "$3"; }
 mux "$TMP/intro-video.mp4" "$TMP/intro-audio.wav" $OUT/video/intro.mp4
 mux "$TMP/story-2-video.mp4" "$TMP/story-2-audio.wav" $OUT/video/story-2.mp4
 
