@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { site } from '../content/site'
 import { ForestScene } from './ForestScene'
+import { DrippingTitle } from './DrippingTitle'
 
 const ease = [0.22, 0.61, 0.36, 1] as const
 
@@ -26,14 +27,14 @@ export function Hero({ onEnter }: { onEnter: () => void }) {
           {site.unit}
         </motion.p>
 
-        <h1 id="title" className="font-display leading-[0.85] font-medium text-ivory">
+        <h1 id="title" aria-label="Behind the Red Hood" className="font-display leading-[0.85] font-medium text-ivory">
           <motion.span
             initial={{ opacity: 0, letterSpacing: '0.6em' }}
             animate={{ opacity: 1, letterSpacing: '0.42em' }}
             transition={{ duration: 3, delay: 0.6, ease }}
             className="block pl-[0.42em] text-[clamp(0.95rem,2.4vw,1.6rem)] text-ivory/80"
           >
-            BEHIND THE
+            <span aria-hidden="true">BEHIND THE</span>
           </motion.span>
           <motion.span
             initial={{ opacity: 0, filter: 'blur(14px)' }}
@@ -41,7 +42,7 @@ export function Hero({ onEnter }: { onEnter: () => void }) {
             transition={{ duration: 3.2, delay: 1.1, ease }}
             className="mt-3 block text-[clamp(3.6rem,13vw,10.5rem)] tracking-[0.04em] [text-shadow:0_0_60px_color-mix(in_srgb,var(--color-blood)_55%,transparent)]"
           >
-            RED <span className="text-crimson">HOOD</span>
+            <DrippingTitle />
           </motion.span>
         </h1>
 

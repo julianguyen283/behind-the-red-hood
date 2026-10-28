@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { motion, useMotionTemplate, useReducedMotion, useSpring, useTransform } from 'motion/react'
+import { animate, motion, useMotionTemplate, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react'
 import { room } from '../content/media'
 
 const clamp = (x: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, x))
@@ -17,10 +17,15 @@ export function RoomScene({ children }: { children: ReactNode }) {
   const [size, setSize] = useState({ w: 1280, h: 800 })
 
   const start = room.lights.lamp
-  const tx = useSpring(start.x, spring)
-  const ty = useSpring(start.y, spring)
-  const radius = useSpring(start.radius, spring)
-  const dark = useSpring(start.dark, spring)
+  // targets; the springs follow them. A glance animates the targets slowly instead of jumping.
+  const tx0 = useMotionValue(start.x)
+  const ty0 = useMotionValue(start.y)
+  const radius0 = useMotionValue(start.radius)
+  const dark0 = useMotionValue(start.dark)
+  const tx = useSpring(tx0, spring)
+  const ty = useSpring(ty0, spring)
+  const radius = useSpring(radius0, spring)
+  const dark = useSpring(dark0, spring)
   const zoom = useSpring(1, { stiffness: 400, damping: 12 })
   const [lightName, setLightName] = useState('lamp')
 
@@ -30,7 +35,7 @@ export function RoomScene({ children }: { children: ReactNode }) {
     let active = ''
     let glanced = ''
     let glance: number | undefined
-    const go = (name: string) => {
+    const go = (name: string, seconds = 0) => {
       const l = room.lights[name] ?? start
       if (l.jolt) {
         // a single jerk of the frame; the light itself stays where it was
@@ -41,9 +46,13 @@ export function RoomScene({ children }: { children: ReactNode }) {
         return
       }
       setLightName(name)
-      for (const [mv, value] of [[tx, l.x], [ty, l.y], [radius, l.radius], [dark, l.dark]] as const) {
-        if (still) mv.jump(value)
-        else mv.set(value)
+      const pairs = [[tx0, tx, l.x], [ty0, ty, l.y], [radius0, radius, l.radius], [dark0, dark, l.dark]] as const
+      for (const [target, follow, value] of pairs) {
+        if (still) {
+          target.jump(value)
+          follow.jump(value)
+        } else if (seconds) animate(target, value, { duration: seconds, ease: 'easeInOut' })
+        else target.set(value)
       }
     }
     const update = () => {
@@ -62,9 +71,10 @@ export function RoomScene({ children }: { children: ReactNode }) {
       if (glimpse !== glanced) {
         glanced = glimpse
         if (glimpse && !still) {
-          go(glimpse)
+          // drift slowly over, linger, then get pulled back a little faster
+          go(glimpse, 2.5)
           window.clearTimeout(glance)
-          glance = window.setTimeout(() => go(active), 1500)
+          glance = window.setTimeout(() => go(active, 1.4), 4200)
           return
         }
       }
@@ -86,7 +96,7 @@ export function RoomScene({ children }: { children: ReactNode }) {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onResize)
     }
-  }, [tx, ty, radius, dark, zoom, still, start])
+  }, [tx, ty, radius, dark, tx0, ty0, radius0, dark0, zoom, still, start])
 
   // cover the screen with the picture, panned towards the light
   const scale = Math.max(size.w / room.width, size.h / room.height)
