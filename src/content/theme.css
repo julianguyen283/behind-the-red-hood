@@ -1,38 +1,55 @@
 /*
   THEME — colours, fonts and reading layout
   =================================================================
-  Change a value here and the whole site updates. Colours are used
-  everywhere through these names (e.g. text-crimson, bg-void).
+  Change a value here and the whole site updates.
+  Contrast figures are against the charcoal background #121012
+  (WCAG AA needs 4.5:1 for normal text).
 */
 
 @theme static {
   /* ── Palette ─────────────────────────────────────────── */
-  --color-void: #08080b; /* page background */
-  --color-charcoal: #141016; /* panels, credits, placeholders */
-  --color-blood: #8c1725; /* deep red accents, ornaments */
-  --color-crimson: #c53242; /* highlights, links, the word HOOD */
-  --color-ivory: #e8dfd5; /* text */
+  --color-void: #121012; /* charcoal — main background */
+  --color-charcoal: #1c1a1c; /* secondary background: audio box, credits */
+  --color-ivory: #e8e1d2; /* all story text (14.6:1) */
+  --color-muted: #a9a196; /* captions, content note, credits (7.4:1) */
+  --color-mist: #6f6a66; /* lines and borders only, never small text (3.5:1) */
+  --color-blood: #8e1b24; /* decoration only: red thread, play buttons (2.1:1) */
+  --color-crimson: #c8504a; /* large headings only, 24px and up (4.2:1) */
 
-  /* Hero forest: tree layers from far (1) to near (4), path and sky */
-  --color-forest-1: #1d171c;
-  --color-forest-2: #140f14;
-  --color-forest-3: #0c090c;
-  --color-forest-4: #050406;
-  --color-forest-sky: #120c11;
-  --color-forest-path: #3a2025;
+  /* Background "mood" — the page colour shifts slowly with the story.
+     Each mood starts at its [[mood:...]] marker in story.md. */
+  --color-mood-forest: #17191b; /* cold forest grey (intro) */
+  --color-mood-kitchen: #0f0e0f; /* the dark kitchen */
+  --color-mood-bedroom: #1b1411; /* warmer, closer: the bedroom */
+  --color-mood-night: #0e121a; /* cold night blue: outside */
+
+  /* Hero forest: tree layers from far (1) to near (4), sky and path */
+  --color-forest-1: #23252a;
+  --color-forest-2: #1a1c20;
+  --color-forest-3: #111215;
+  --color-forest-4: #0a0b0d;
+  --color-forest-sky: #1d2024;
+  --color-forest-path: #2c2e31;
+  --color-forest-light: #c9cdd2; /* the cold light at the end of the path */
 
   /* ── Fonts ───────────────────────────────────────────── */
   /* To change a font, also update the @fontsource imports in src/main.tsx */
-  --font-display: 'Cormorant Garamond', 'Times New Roman', serif; /* title, headings */
-  --font-fell: 'IM Fell English', 'Cormorant Garamond', serif; /* subtitle, set-apart lines */
-  --font-story: 'Crimson Pro', Georgia, serif; /* the story */
-  --font-ui: 'Inter', system-ui, sans-serif; /* buttons, labels, credits */
+  --font-display: 'Cormorant Garamond', 'Times New Roman', serif; /* title, large headings only */
+  --font-story: 'EB Garamond', Georgia, serif; /* the story */
+  --font-ui: 'Inter', system-ui, sans-serif; /* buttons, captions, credits */
 }
 
 :root {
   /* ── Reading layout ──────────────────────────────────── */
-  --story-width: 36rem; /* width of the text column (~65 characters) */
-  --story-size: clamp(1.14rem, 0.5vw + 1.02rem, 1.34rem); /* story text size */
-  --story-leading: 1.82; /* line spacing */
-  --story-indent: 1.6em; /* first-line indent of each new paragraph */
+  --story-size: 1.125rem; /* 18px on phones */
+  --story-leading: 1.7; /* line spacing */
+  --story-indent: 1.5em; /* first-line indent of each new paragraph */
+  --story-width: 34em; /* 60–68 characters per line */
+  --ui-size: 0.875rem; /* 14px: captions, buttons, credits */
+}
+@media (min-width: 768px) {
+  :root {
+    --story-size: 1.25rem; /* 20px on larger screens */
+    --ui-size: 0.9375rem; /* 15px */
+  }
 }

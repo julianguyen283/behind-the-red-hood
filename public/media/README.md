@@ -1,19 +1,20 @@
 # Media files
 
-Put your media here, using these exact names. Missing files show a labelled placeholder on the site.
-Paths, alt text, captions and credits are set in `src/content/media.ts`.
+Put your media here, using these exact names. A missing file shows a labelled placeholder on the site.
+Alt text, transcript, timed text and placement are set in `src/content/media.ts`.
 
-| File | Used for |
-|---|---|
-| `video/intro.mp4` | Introductory first-person film |
-| `images/intro-poster.jpg` | (optional) still frame shown before the intro film plays |
-| `captions/intro.vtt` | Intro captions (sample included: re-time it) |
-| `audio/grandmother-voice.mp3` | The voice from the bedroom (20–30 s) |
-| `images/illustration-1.jpg` | Illustration 1: the room from the doorway |
-| `video/story-2.mp4` | Video 2: the shadow reaching for the window (8–12 s) |
-| `captions/story-2.vtt` | Video 2 captions |
-| `images/illustration-2.jpg` | Illustration 2: the hood on the thorns |
-| `audio/ambience.mp3` | (optional) looping background ambience |
+| File | Used for | Target |
+|---|---|---|
+| `video/intro.mp4` | Opening film | 35–45 s, H.264 1920×1080, under 15 MB |
+| `images/intro-poster.webp` | First frame of the opening film (the forest path) | |
+| `captions/intro.vtt` | Opening film sound captions (included, re-time to your edit) | |
+| `audio/grandmother-voice.mp3` | "Listen at the door" | 20–25 s, MP3 192 kbps, about −16 LUFS |
+| `images/illustration-1.webp` | Illustration 1: the bedroom from the doorway | 3:2, under 400 KB |
+| `images/illustration-1-mobile.webp` | The same, cropped 4:5 for phones (bed in the middle) | 4:5, under 400 KB |
+| `video/story-2.mp4` | Video 2: the room behind Red (optional, hidden on the live site if missing) | 8–10 s, under 5 MB |
+| `images/story-2-poster.webp` | First frame of Video 2 | |
+| `captions/story-2.vtt` | Video 2 sound captions (included) | |
+| `images/illustration-2.webp` | Illustration 2: the hood on the thorns | 4:5, under 400 KB |
 
-Keep each file under about 50 MB (GitHub rejects files over 100 MB).
-Use H.264 MP4 for video and JPG or WebP for images (about 2000 px wide is plenty).
+To convert a JPG/PNG to WebP: <https://squoosh.app> (free, in the browser), quality about 75.
+Keep every file under 25 MB if you upload on github.com (GitHub's web upload limit).
