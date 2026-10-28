@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { motion, useMotionTemplate, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { storyMedia, type ImageMedia, type VideoMedia } from '../content/media'
 import { AudioPlayer } from './AudioPlayer'
 import { MediaPlaceholder } from './MediaPlaceholder'
@@ -18,23 +19,37 @@ function Caption({ caption, credit }: { caption?: string; credit?: string }) {
 function StoryImage({ media }: { media: ImageMedia }) {
   const [missing, setMissing] = useState(false)
   const dialog = useRef<HTMLDialogElement>(null)
+  // "Look back": the picture is lifted out of darkness as the reader scrolls towards it.
+  const frame = useRef<HTMLDivElement>(null)
+  const still = useReducedMotion() ?? false
+  const { scrollYProgress } = useScroll({ target: frame, offset: ['start end', 'center center'] })
+  const light = useTransform(scrollYProgress, [0.1, 1], [0.03, 1])
+  const filter = useMotionTemplate`brightness(${light})`
   if (missing) return <MediaPlaceholder kind="image" note={media.placeholderNote} aspect={media.aspect} />
 
   const image = (
     <>
-      <img src={media.src} alt={media.alt} loading="lazy" decoding="async" onError={() => setMissing(true)} className="h-full w-full object-cover" />
+      <motion.img
+        src={media.src}
+        alt={media.alt}
+        loading="lazy"
+        decoding="async"
+        onError={() => setMissing(true)}
+        className="h-full w-full object-cover"
+        style={media.lookBack && !still ? { filter } : undefined}
+      />
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 shadow-[inset_0_0_100px_30px_color-mix(in_srgb,var(--color-void)_70%,transparent)]" />
     </>
   )
   if (!media.enlarge) {
     return (
-      <div className="relative overflow-hidden bg-charcoal" style={{ aspectRatio: media.aspect }}>
+      <div ref={frame} className="relative overflow-hidden bg-charcoal" style={{ aspectRatio: media.aspect }}>
         {image}
       </div>
     )
   }
   return (
-    <>
+    <div ref={frame}>
       <button
         type="button"
         onClick={() => dialog.current?.showModal()}
@@ -65,7 +80,7 @@ function StoryImage({ media }: { media: ImageMedia }) {
           </button>
         </div>
       </dialog>
-    </>
+    </div>
   )
 }
 
