@@ -1,31 +1,22 @@
 <!--
   BEHIND THE RED HOOD — MAIN STORY  (limit 900–1,500 words)
   ================================================================
-  Source: "Behind the Red Hood: Story Draft", section B (draft 3).
-  Plain straight quotes are fine; the site converts them to curly quotes.
+  Source: "Behind the Red Hood: Story Draft", section B (draft 3). Plain straight
+  quotes are fine; the site converts them to curly quotes automatically.
   During `npm run dev`, a counter (bottom-left) shows the word count.
 
-  Formatting:
-    • One blank line between paragraphs.
-    • *italic words*        → italics
-    • > A line on its own    → a set-apart line, centred
-
-  Markers (each on its own line, except [[thread-end]]):
+  Formatting rules:
+    • Separate paragraphs with one blank line.
+    • *italic words*           → italics (thoughts, emphasis)
+    • > A line on its own       → a set-apart line, centred
+    • * * *                     → a quiet pause ornament (not a chapter break)
     • [[audio:audio-1]] [[image:image-1]] [[video:video-2]]
-                             → media, configured in src/content/media.ts
-    • [[mood:kitchen]] / [[mood:bedroom]] / [[mood:night]]
-                             → the page background slowly shifts to this
-                               colour from here (colours in theme.css)
-    • [[reveal:off]] … [[reveal:on]]
-                             → paragraphs in between appear with no fade
-                               (the climax runs without effects)
-    • [[thread-end]]         → inside a paragraph: the exact point where the
-                               red thread stops (the hood is torn away)
-  The first paragraph automatically receives a drop cap.
+                                → media (configure in src/content/media.ts)
+    • [[sense:ears]] / [[sense:eyes]] / [[sense:teeth]]
+                                → optional small glyph divider (not used now)
+  The first paragraph automatically receives a crimson drop cap.
   HTML comments like this one are ignored.
 -->
-
-[[mood:kitchen]]
 
 The door swung open at my second knock, and no one stood behind it.
 
@@ -42,8 +33,6 @@ At the far end of the room the bedroom door stood half open, and a thread of lam
 Then she spoke to me from the bedroom.
 
 [[audio:audio-1]]
-
-[[mood:bedroom]]
 
 It was her voice, nearly. And it had not called me lark. Illness thickens a voice, I told myself, and a fever makes the old forget the names they have used for years. I crossed the kitchen, nudged the bedroom door wider with my shoulder, and stopped on the threshold.
 
@@ -72,8 +61,6 @@ My face began to smile, the way it did when a man at market said something I did
 "You're standing there like a stranger," she said. "Be a good girl and come and sit with me."
 
 [[image:image-1]]
-
-[[reveal:off]]
 
 Her spectacles lay folded on the nightstand. Without them she could not read the almanac or find her own slippers, and yet the eyes beneath the nightcap followed each small movement I made. I wanted those eyes on my face and nowhere else.
 
@@ -109,10 +96,6 @@ I threw the lamp. The chimney broke in my fist as it left me, and the rest burst
 
 The latch would not lift. I struck it with the heel of my cut hand, once, twice, while the light jumped on the walls and the thing beyond the fire made a sound that was not a word. On the third blow the swollen wood gave. Cold air poured in, and I went through head first. Halfway out, something caught my skirt. The cloth drew tight, a long, tearing pain went down the back of my leg, and then the hem ripped free and I fell into the wet grass of the yard.
 
-[[reveal:on]]
-
-[[mood:night]]
-
 [[video:video-2]]
 
-My leg would not take my weight properly. I ran anyway, half stumbling. At the edge of the yard the brambles took my stockings and then my hood; it snagged and pulled at my throat, and I tore the clasp open and left it hanging behind me, red on the black thorns.[[thread-end]] I did not know whether Grandmother was in that house. I did not know whether the fire had held, or for how long. I knew only the way to the village and the sound of my own breath.
+My leg would not take my weight properly. I ran anyway, half stumbling. At the edge of the yard the brambles took my stockings and then my hood; it snagged and pulled at my throat, and I tore the clasp open and left it hanging behind me, red on the black thorns. I did not know whether Grandmother was in that house. I did not know whether the fire had held, or for how long. I knew only the way to the village and the sound of my own breath.

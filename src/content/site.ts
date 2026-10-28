@@ -4,41 +4,40 @@ export const site = {
   title: 'Behind the Red Hood',
   subtitle: 'A Gothic Retelling of Little Red Riding Hood',
   author: '[Your Name]',
-  unit: 'MMCC1050, Macquarie University',
+  unit: 'MMCC1050 · Macquarie University',
   year: 2026,
-  enterLabel: 'Enter',
-  /** Shown on the first screen, under the title. Leave '' to hide. */
-  contentNote: 'This story contains psychological manipulation and threatened violence.',
-  listeningNote: 'Best with headphones',
+  enterLabel: 'Enter the Woods',
+  introEyebrow: 'The Path In',
+  /** Optional short line shown above the intro film. Leave '' to hide. */
+  introLine: '',
+  /** Line that appears word by word when the intro film ends. Leave '' to hide. */
+  introEndLine: '',
   /** Story length limits, used by the word counter shown during `npm run dev`. */
   wordLimit: { min: 900, max: 1500 },
+  /** Content warning shown discreetly before the story. Leave '' to hide. */
+  contentNote:
+    'Content note: this story contains psychological manipulation and the threat of violence.',
 }
 
 export type CreditItem = {
   label: string
   value: string
-  /** optional link to the source (Freesound page, tool website, licence…) */
-  href?: string
-  /** true = still to be filled in; marked with a red bar so it is easy to spot */
+  /** true = still to be filled in; rendered in a visibly "pending" style. */
   pending?: boolean
 }
 
 export type CreditGroup = { heading: string; items: CreditItem[] }
 
-/*
-  Fill these in as you make each asset (tool + version, date, licence).
-  Call AI-made media "AI-generated", not "original".
-  Full prompts belong in your AI log / reference list, not here.
-*/
 export const credits: CreditGroup[] = [
   {
-    heading: 'Authorship',
+    heading: 'Creative Authorship',
     items: [
       { label: 'Story', value: '[Your Name]', pending: true },
+      { label: 'Concept & art direction', value: '[Your Name]', pending: true },
       {
         label: 'Website',
         value:
-          'Built in React, TypeScript, Vite, Tailwind CSS and Motion, with AI coding assistance (Claude, Anthropic). [Describe your own role in directing and editing it.]',
+          'Designed and built in React, TypeScript, Vite, Tailwind CSS and Motion, with AI coding assistance (Claude, Anthropic). [Describe your own role in directing and editing it.]',
         pending: true,
       },
       {
@@ -49,37 +48,50 @@ export const credits: CreditGroup[] = [
     ],
   },
   {
-    heading: 'AI-Generated Media',
+    heading: 'AI-Generated or AI-Assisted Media',
     items: [
-      { label: 'Opening video (shots 1, 3, 5, 6)', value: 'AI-generated with [tool, version], [date]; edited by the author in [editor].', pending: true },
-      { label: 'Illustration 1: the bedroom', value: 'AI-generated with [tool, version], [date]; [manual edits].', pending: true },
-      { label: 'Video 2: the room behind Red', value: 'AI-generated with [tool, version], [date].', pending: true },
-      { label: 'Illustration 2: the hood on the thorns', value: 'AI-generated with [tool, version], [date]; [manual edits].', pending: true },
+      {
+        label: 'Opening film, Video 2, Illustrations 1 & 2',
+        value:
+          'AI-generated: painted procedurally in code (HTML canvas) by Claude (Anthropic) to the author’s media brief, 28 Oct 2026. Source code in tools/media/ in the project repository.',
+      },
     ],
   },
   {
-    heading: 'Sound',
+    heading: 'Music & Sound',
     items: [
-      { label: 'Footsteps, knocks, hinge', value: 'Recorded by the author.', pending: true },
-      { label: 'The voice from the bedroom', value: 'Recorded by the author; pitch and reverb in Audacity.', pending: true },
       {
-        label: 'Background drone (if used)',
-        value: '[Title] by [creator], Freesound, [CC0 / CC BY 4.0]. Delete this line if not used.',
-        href: 'https://freesound.org/',
+        label: 'Soundtrack, effects and ambience',
+        value:
+          'Footsteps, birdsong, knocks, hinge, wind, fire and the background drone are synthesised in code (numpy) by Claude (Anthropic), 28 Oct 2026; no recorded samples.',
+      },
+      {
+        label: 'The voice from the bedroom',
+        value:
+          'Synthetic stand-in voice: Festival Speech Synthesis System 2.5 with the CMU ARCTIC “SLT” HTS voice (Carnegie Mellon University; Nagoya Institute of Technology), processed with FFmpeg. [Replace with “Recorded by the author” if you record it yourself.]',
         pending: true,
       },
     ],
   },
   {
-    heading: 'Type & Code',
+    heading: 'Assets & Copyright',
     items: [
       {
-        label: 'Typefaces',
-        value: 'Cormorant Garamond, EB Garamond and Inter: SIL Open Font License 1.1, self-hosted via Fontsource.',
-        href: 'https://openfontlicense.org/',
+        label: 'Hero forest',
+        value: 'Vector forest generated procedurally in code for this project (AI-assisted development).',
       },
-      { label: 'Software', value: 'React, Vite, Tailwind CSS and Motion: MIT License.' },
-      { label: 'Title-screen forest', value: 'Vector forest generated procedurally in code for this project (AI-assisted development).' },
+      {
+        label: 'Media tools',
+        value: 'Rendered with Chromium via Playwright and encoded with FFmpeg.',
+      },
+      {
+        label: 'Typefaces',
+        value: 'Cormorant Garamond, Crimson Pro, IM Fell English and Inter — SIL Open Font License 1.1, self-hosted via Fontsource.',
+      },
+      {
+        label: 'Software',
+        value: 'React, Vite, Tailwind CSS and Motion — MIT License.',
+      },
     ],
   },
 ]

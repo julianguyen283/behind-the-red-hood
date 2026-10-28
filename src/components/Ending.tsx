@@ -1,23 +1,21 @@
 import endingRaw from '../content/ending.md?raw'
-import { storyMedia, type ImageMedia } from '../content/media'
 import { parseStory } from '../lib/parseStory'
-import { Reveal } from './Reveal'
 import { StoryBlocks } from './StoryBlocks'
-import { StoryImage } from './StoryMedia'
+import { StoryMedia } from './StoryMedia'
 
 export const endingBlocks = parseStory(endingRaw)
 
-/** The last lines, then Illustration 2 alone with plenty of darkness around it. */
 export function Ending() {
-  const image = storyMedia['image-2'] as ImageMedia | undefined
   return (
-    <section aria-label="Ending" className="relative px-5 pb-[30vh] sm:px-8">
-      <StoryBlocks blocks={endingBlocks} dropCap={false} />
-      {image && (
-        <Reveal as="figure" className="mx-auto mt-[30vh] w-full max-w-md">
-          <StoryImage media={image} />
-        </Reveal>
-      )}
+    <section aria-label="Ending" className="relative overflow-hidden bg-void px-5 pt-24 pb-40 sm:px-8 md:pt-32 md:pb-56">
+      {/* the light at the end is cold, and a little red */}
+      <div aria-hidden="true" className="ember pointer-events-none absolute inset-x-0 bottom-0 h-[70%] bg-[radial-gradient(ellipse_at_50%_100%,color-mix(in_srgb,var(--color-blood)_28%,transparent),transparent_65%)]" />
+      <div aria-hidden="true" className="fog-layer bottom-[10%] h-[40%] opacity-60" style={{ animationDuration: '70s' }} />
+
+      <div className="relative">
+        <StoryBlocks blocks={endingBlocks} dropCap={false} />
+        <StoryMedia id="image-2" />
+      </div>
     </section>
   )
 }

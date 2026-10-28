@@ -1,0 +1,223 @@
+"""
+Synthesises the site's sound: background ambience, the opening-film
+soundtrack, Video 2's sound, and the sound bed under the bedroom voice.
+Everything is generated from noise and oscillators; no recorded samples.
+
+Usage:  python3 tools/media/audio.py <out_dir>
+Writes WAV files that build.sh then encodes with ffmpeg.
+"""
+import sys
+import wave
+
+import numpy as np
+
+SR = 44100
+rng = np.random.default_rng(1050)
+
+
+def t_axis(seconds):
+    return np.arange(int(seconds * SR)) / SR
+
+
+def brown(n):
+    x = np.cumsum(rng.standard_normal(n))
+    x -= np.linspace(x[0], x[-1], n)  # remove drift (band-passing later removes the rest)
+    return x / (np.abs(x).max() + 1e-9)
+
+
+def fft_band(x, lo, hi):
+    """Band-pass by zeroing FFT bins (fine for offline synthesis)."""
+    X = np.fft.rfft(x)
+    f = np.fft.rfftfreq(len(x), 1 / SR)
+    X[(f < lo) | (f > hi)] = 0
+    return np.fft.irfft(X, len(x))
+
+
+def smooth_env(n, points):
+    """Piecewise-linear envelope from (time_s, value) points."""
+    t = np.arange(n) / SR
+    ts, vs = zip(*points)
+    return np.interp(t, ts, vs)
+
+
+def wind(seconds, lo=150, hi=900, gust_rate=0.07):
+    n = int(seconds * SR)
+    w = fft_band(brown(n) + 0.15 * rng.standard_normal(n), lo, hi)
+    w /= np.abs(w).max() + 1e-9
+    t = t_axis(seconds)
+    gust = 0.55 + 0.3 * np.sin(2 * np.pi * gust_rate * t) + 0.15 * np.sin(2 * np.pi * gust_rate * 2.7 * t + 1.3)
+    return w * gust
+
+
+def drone(seconds, f0=55.0):
+    t = t_axis(seconds)
+    vib = 1 + 0.002 * np.sin(2 * np.pi * 0.11 * t)
+    x = np.zeros_like(t)
+    for mult, amp in [(1, 1.0), (1.5, 0.35), (2, 0.25), (3, 0.08)]:
+        x += amp * np.sin(2 * np.pi * f0 * mult * vib * t + rng.uniform(0, 6))
+    swell = 0.6 + 0.4 * np.sin(2 * np.pi * t / seconds * 2 - np.pi / 2) ** 2
+    return x / np.abs(x).max() * swell
+
+
+def leaf_step(intensity=1.0):
+    """One footstep on dry leaves: a dull thud plus a burst of crackle."""
+    n = int(0.32 * SR)
+    t = np.arange(n) / SR
+    thud = np.sin(2 * np.pi * 70 * t) * np.exp(-t * 28) * 0.5
+    crackle = np.zeros(n)
+    hits = rng.integers(0, int(0.22 * SR), 70)
+    crackle[hits] = rng.uniform(-1, 1, hits.size)
+    crackle = fft_band(crackle + 0.25 * rng.standard_normal(n) * np.exp(-t * 18), 1500, 9000)
+    crackle /= np.abs(crackle).max() + 1e-9
+    return intensity * (thud + 0.55 * crackle * np.exp(-t * 9))
+
+
+def chirp(f_start, f_end, dur):
+    t = t_axis(dur)
+    f = np.linspace(f_start, f_end, t.size)
+    phase = 2 * np.pi * np.cumsum(f) / SR
+    return np.sin(phase) * np.sin(np.pi * t / dur) ** 2
+
+
+def knock():
+    t = t_axis(0.35)
+    body = sum(a * np.sin(2 * np.pi * f * t) * np.exp(-t * d) for f, a, d in [(118, 1.0, 22), (240, 0.5, 30), (410, 0.25, 45)])
+    click = fft_band(rng.standard_normal(t.size) * np.exp(-t * 300), 800, 5000)
+    return body + 0.6 * click / (np.abs(click).max() + 1e-9)
+
+
+def creak(dur, f_lo=60, f_hi=220, bright=2400):
+    """Stick-slip creak: an irregular pulse train swept in pitch."""
+    t = t_axis(dur)
+    f = f_lo + (f_hi - f_lo) * (0.5 - 0.5 * np.cos(np.pi * t / dur)) * (1 + 0.15 * np.sin(2 * np.pi * 3.1 * t))
+    f *= 1 + 0.06 * rng.standard_normal(t.size).cumsum() / np.sqrt(t.size)
+    phase = np.cumsum(f) / SR
+    pulses = (np.diff(np.floor(phase), prepend=0) > 0).astype(float)
+    pulses *= rng.uniform(0.5, 1.0, t.size)
+    k = np.exp(-np.arange(int(0.006 * SR)) / (0.0012 * SR)) * np.sin(2 * np.pi * 900 * np.arange(int(0.006 * SR)) / SR)
+    x = np.convolve(pulses, k, mode='same')
+    x = fft_band(x, 80, bright)
+    env = np.sin(np.pi * t / dur) ** 0.6
+    return x / (np.abs(x).max() + 1e-9) * env
+
+
+def breath(dur, depth=1.0):
+    t = t_axis(dur)
+    n = fft_band(rng.standard_normal(t.size), 150, 1400)
+    n /= np.abs(n).max() + 1e-9
+    inhale = np.clip(t / (dur * 0.45), 0, 1) ** 1.5 * (t < dur * 0.5)
+    exhale = (t >= dur * 0.5) * np.exp(-(t - dur * 0.5) / (dur * 0.22))
+    return depth * n * (0.6 * inhale + exhale) * 0.8
+
+
+def place(track, clip, at, gain=1.0):
+    i = int(at * SR)
+    j = min(track.size, i + clip.size)
+    track[i:j] += gain * clip[: j - i]
+
+
+def write(path, mono_or_stereo, peak=0.89):
+    x = np.atleast_2d(mono_or_stereo)
+    if x.shape[0] == 1:
+        x = np.vstack([x, x])
+    x = x / (np.abs(x).max() + 1e-9) * peak
+    data = (x.T * 32767).astype('<i2').tobytes()
+    with wave.open(path, 'wb') as w:
+        w.setnchannels(2)
+        w.setsampwidth(2)
+        w.setframerate(SR)
+        w.writeframes(data)
+
+
+def stereo(x, spread=0.9):
+    """Cheap stereo width: slightly delayed, filtered copy on the right."""
+    d = int(0.011 * SR)
+    r = np.concatenate([np.zeros(d), x[:-d]])
+    return np.vstack([x, spread * x + (1 - spread) * r])
+
+
+def ambience(out):
+    """64 s seamless loop: wind in the trees over a very low drone."""
+    L, X = 64.0, 4.0
+    total = L + X
+    w = wind(total, 120, 1100, gust_rate=1 / 16)
+    w2 = wind(total, 300, 2200, gust_rate=1 / 23) * 0.35
+    d = drone(total, 55.0) * 0.22
+    mix = 0.75 * w + w2 + d
+    # distant creaking branches, very quiet
+    for at in [9.5, 31.0, 50.5]:
+        place(mix, creak(1.8, 40, 110, 900), at, 0.12)
+    # seamless loop: crossfade the extra tail over the head
+    n, xn = int(L * SR), int(X * SR)
+    fade = np.linspace(0, 1, xn)
+    head = mix[:n].copy()
+    head[:xn] = head[:xn] * fade + mix[n : n + xn] * (1 - fade)
+    write(out, stereo(head))
+
+
+def intro(out):
+    """44 s opening film: steps on leaves, birdsong that stops, silence, two knocks, a hinge."""
+    T = 44.5
+    track = np.zeros(int(T * SR))
+    # wind, falling away before the door
+    w = wind(T, 150, 1000, 1 / 11) * smooth_env(int(T * SR), [(0, 0.0), (1.5, 0.30), (20, 0.26), (25, 0.04), (31, 0.0), (44.5, 0.0)])
+    track += w
+    # birds until ~8.5 s, then nothing
+    t = 0.4
+    while t < 8.2:
+        f = rng.uniform(2600, 4200)
+        for k in range(rng.integers(2, 5)):
+            place(track, chirp(f, f * rng.uniform(1.2, 1.6), rng.uniform(0.05, 0.11)), t + k * 0.13, 0.08 * (1 - t / 9))
+        t += rng.uniform(0.6, 1.4)
+    # footsteps: steady, slowing near the cottage, stopping at the door
+    t, gap = 0.3, 0.62
+    while t < 24.0:
+        place(track, leaf_step(rng.uniform(0.8, 1.0)), t, 0.55)
+        if t > 15:
+            gap = min(0.95, gap + 0.025)
+        t += gap * rng.uniform(0.95, 1.05)
+    # two knocks, with a gap
+    place(track, knock(), 32.6, 0.9)
+    place(track, knock(), 33.7, 0.85)
+    # the hinge's long complaint
+    place(track, creak(6.6, 70, 260, 3200), 36.4, 0.5)
+    place(track, creak(4.0, 45, 120, 1200), 38.8, 0.25)
+    # near-silent room tone so the "silence" is not digital zero
+    track += 0.004 * fft_band(rng.standard_normal(track.size), 80, 600)
+    write(out, stereo(track), peak=0.8)
+
+
+def video2(out):
+    """10 s: wind through the open window, faint crackle, then silence."""
+    T = 10.0
+    n = int(T * SR)
+    track = wind(T, 200, 1600, 1 / 5) * smooth_env(n, [(0, 0.0), (0.4, 0.55), (5.5, 0.45), (7.6, 0.2), (8.0, 0.0), (T, 0.0)])
+    crack = np.zeros(n)
+    hits = rng.integers(0, int(4.2 * SR), 260)
+    crack[hits] = rng.uniform(-1, 1, hits.size) ** 3
+    crack = fft_band(crack, 1200, 7000)
+    crack /= np.abs(crack).max() + 1e-9
+    track += 0.22 * crack * smooth_env(n, [(0, 1), (3.5, 0.6), (4.5, 0.0), (T, 0)])
+    track += 0.003 * fft_band(rng.standard_normal(n), 80, 600)
+    write(out, stereo(track), peak=0.75)
+
+
+def voice_bed(out):
+    """Creaks and breathing that sit under the bedroom voice (22 s)."""
+    T = 22.0
+    track = np.zeros(int(T * SR))
+    place(track, creak(2.6, 35, 95, 900), 0.6, 0.9)  # heavy bed timbers
+    place(track, breath(2.6, 1.0), 6.6, 0.55)  # one slow breath, too deep
+    place(track, creak(1.9, 30, 80, 700), 16.4, 0.8)  # something shifts its weight
+    place(track, breath(3.0, 0.7), 18.0, 0.35)
+    track += 0.006 * fft_band(rng.standard_normal(track.size), 60, 500)
+    write(out, stereo(track, 0.95), peak=0.7)
+
+
+if __name__ == '__main__':
+    d = sys.argv[1]
+    ambience(f'{d}/ambience.wav')
+    intro(f'{d}/intro-audio.wav')
+    video2(f'{d}/story-2-audio.wav')
+    voice_bed(f'{d}/voice-bed.wav')
+    print('audio done')

@@ -10,6 +10,7 @@
     -webkit-text-size-adjust: 100%;
   }
   body {
+    background: var(--color-void);
     font-family: var(--font-story);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -20,15 +21,8 @@
     color: var(--color-ivory);
   }
   :focus-visible {
-    outline: 2px solid var(--color-ivory);
-    outline-offset: 3px;
-  }
-  /* Native video captions in the site's typography */
-  video::cue {
-    font-family: var(--font-ui);
-    font-size: 0.95em;
-    background: rgb(0 0 0 / 0.72);
-    color: var(--color-ivory);
+    outline: 1px solid var(--color-crimson);
+    outline-offset: 4px;
   }
   @media (prefers-reduced-motion: reduce) {
     html {
@@ -37,75 +31,97 @@
     *,
     *::before,
     *::after {
-      animation: none !important;
-      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
     }
   }
 }
 
-@utility text-ui {
-  font-family: var(--font-ui);
-  font-size: var(--ui-size);
-  line-height: 1.6;
+/* Film grain — inline SVG noise, no external asset */
+.grain::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 1.2s steps(6) infinite;
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -3%); }
+  60% { transform: translate(-2%, -1%); }
+  80% { transform: translate(3%, 3%); }
+  100% { transform: translate(0, 0); }
 }
 
-/* Film grain over the whole page (static, ~4%) and a soft dark vignette */
-.page-grain {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  pointer-events: none;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-.page-vignette {
-  position: fixed;
-  inset: 0;
-  z-index: 59;
-  pointer-events: none;
-  background: radial-gradient(ellipse at center, transparent 55%, rgb(0 0 0 / 0.45) 100%);
-}
-
-/* Slow drifting fog in the hero */
+/* Drifting fog bands */
 .fog-layer {
   position: absolute;
   left: -50%;
   width: 200%;
   pointer-events: none;
-  background: radial-gradient(ellipse at 25% 50%, rgb(232 225 210 / 0.08), transparent 60%),
-    radial-gradient(ellipse at 70% 60%, rgb(232 225 210 / 0.05), transparent 55%);
+  background: radial-gradient(ellipse at 25% 50%, rgb(232 223 213 / 0.09), transparent 60%),
+    radial-gradient(ellipse at 70% 60%, rgb(232 223 213 / 0.06), transparent 55%);
   filter: blur(18px);
   animation: drift linear infinite alternate;
 }
 @keyframes drift {
-  from { transform: translateX(-5%); }
-  to { transform: translateX(5%); }
+  from { transform: translateX(-6%); }
+  to { transform: translateX(6%); }
+}
+
+/* Slow candle-like flicker for the crimson light */
+@keyframes ember {
+  0%, 100% { opacity: 0.55; }
+  45% { opacity: 0.72; }
+  55% { opacity: 0.5; }
+  75% { opacity: 0.66; }
+}
+.ember {
+  animation: ember 7s ease-in-out infinite;
+}
+
+@keyframes sway {
+  0%, 100% { transform: rotate(-0.4deg); }
+  50% { transform: rotate(0.4deg); }
+}
+.sway {
+  transform-origin: 50% 100%;
+  animation: sway 14s ease-in-out infinite;
 }
 
 /* Story typography */
-.story-prose > p,
-.story-prose > div > p {
+.story-prose p {
   font-size: var(--story-size);
   line-height: var(--story-leading);
-  color: var(--color-ivory);
+  color: color-mix(in srgb, var(--color-ivory) 90%, transparent);
   hanging-punctuation: first;
+  hyphens: manual;
 }
-.story-prose > p + p {
+.story-prose p + p {
   text-indent: var(--story-indent);
+}
+.story-prose em {
+  color: var(--color-ivory);
 }
 .drop-cap {
   display: flow-root; /* contain the floated letter so the next paragraph starts cleanly */
 }
 .drop-cap::first-letter {
   float: left;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 4.1em;
-  line-height: 0.82;
-  padding: 0.06em 0.1em 0 0;
+  font-family: var(--font-fell);
+  font-size: 4.6em;
+  line-height: 0.8;
+  padding: 0.08em 0.12em 0 0;
   color: var(--color-crimson);
 }
 
 .placeholder-stripes {
-  background-image: repeating-linear-gradient(135deg, rgb(232 225 210 / 0.025) 0 1px, transparent 1px 14px);
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgb(232 223 213 / 0.025) 0 1px,
+    transparent 1px 14px
+  );
 }
