@@ -58,7 +58,7 @@ export const credits: CreditGroup[] = [
       {
         label: 'Opening film',
         value:
-          'AI-generated: painted procedurally in code (HTML canvas) by Claude (Anthropic) to the author’s media brief, 28 Oct 2026. Source code in tools/media/ in the project repository.',
+          'Four AI-generated stills by the author with ChatGPT image generation (OpenAI), October 2026; camera moves, dissolves and edit made in code by Claude (Anthropic) to the author’s media brief (tools/media/stills_film.py in the project repository).',
       },
     ],
   },
