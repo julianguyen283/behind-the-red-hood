@@ -8,7 +8,7 @@ export function DevWordCount({ story, ending }: { story: StoryBlock[]; ending: S
   const inRange = total >= min && total <= max
   return (
     <div className="fixed bottom-3 left-3 z-50 rounded border border-ivory/15 bg-void/90 px-3 py-2 font-ui text-[0.65rem] text-ivory/70">
-      Story words: <strong className={inRange ? 'text-emerald-400' : 'text-crimson'}>{total}</strong> / limit {min.toLocaleString()}–{max.toLocaleString()}
+      Story words: <strong className={inRange ? 'text-ivory underline' : 'text-ivory'}>{total}</strong> / limit {min.toLocaleString()}–{max.toLocaleString()}
     </div>
   )
 }

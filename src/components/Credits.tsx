@@ -1,39 +1,45 @@
 import { credits, site } from '../content/site'
-import { Reveal } from './Reveal'
 
+/** Small, clearly separate credits and media sources. */
 export function Credits() {
   return (
-    <footer id="credits" aria-labelledby="credits-heading" className="border-t border-ivory/10 bg-charcoal/60 px-5 py-20 sm:px-8 md:py-28">
+    <footer id="credits" aria-labelledby="credits-heading" className="relative z-10 border-t border-mist/40 bg-charcoal px-5 py-16 sm:px-8 md:py-20">
       <div className="mx-auto max-w-5xl">
-        <Reveal>
-          <h2 id="credits-heading" className="text-center font-ui text-[0.65rem] tracking-[0.5em] text-crimson uppercase">
-            Credits
-          </h2>
-        </Reveal>
+        <h2 id="credits-heading" className="font-display text-3xl font-medium text-ivory">
+          Credits &amp; Sources
+        </h2>
 
-        <div className="mt-14 grid gap-x-16 gap-y-14 md:grid-cols-2">
+        <div className="mt-10 grid gap-x-14 gap-y-10 md:grid-cols-2">
           {credits.map((group) => (
-            <Reveal key={group.heading}>
-              <h3 className="font-display text-2xl text-ivory">{group.heading}</h3>
-              <dl className="mt-5 space-y-4">
+            <section key={group.heading} aria-labelledby={`credits-${group.heading}`}>
+              <h3 id={`credits-${group.heading}`} className="text-ui font-medium text-ivory">
+                {group.heading}
+              </h3>
+              <dl className="mt-3 space-y-3">
                 {group.items.map((item) => (
-                  <div key={item.label} className="grid gap-1 border-t border-ivory/[0.07] pt-3 sm:grid-cols-[10rem_1fr] sm:gap-4">
-                    <dt className="font-ui text-[0.7rem] tracking-[0.14em] text-ivory/45 uppercase">{item.label}</dt>
-                    <dd className={`font-ui text-[0.86rem] leading-relaxed ${item.pending ? 'text-crimson/80' : 'text-ivory/75'}`}>
+                  <div key={item.label} className={`border-t border-mist/30 pt-3 ${item.pending ? 'border-l-2 border-l-blood pl-3' : ''}`}>
+                    <dt className="text-ui text-ivory/90">{item.label}</dt>
+                    <dd className="text-ui text-muted">
                       {item.value}
+                      {item.href && (
+                        <>
+                          {' '}
+                          <a href={item.href} target="_blank" rel="noreferrer" className="underline decoration-mist underline-offset-4 hover:text-ivory">
+                            Source<span className="sr-only"> (opens in a new tab)</span>
+                          </a>
+                        </>
+                      )}
                       {item.pending && <span className="sr-only"> (to be completed)</span>}
                     </dd>
                   </div>
                 ))}
               </dl>
-            </Reveal>
+            </section>
           ))}
         </div>
 
-        <p className="mt-20 text-center font-ui text-[0.68rem] leading-relaxed tracking-[0.12em] text-ivory/40">
-          © {site.year} {site.author}. {site.title} — created for {site.unit}.
-          <br />
-          All rights reserved unless otherwise stated above.
+        <p className="text-ui mt-14 text-muted">
+          © {site.year} {site.author}. {site.title}, created for {site.unit}.
         </p>
       </div>
     </footer>

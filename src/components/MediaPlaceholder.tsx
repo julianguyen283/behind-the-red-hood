@@ -18,13 +18,12 @@ export function MediaPlaceholder({ kind, note, aspect, children }: Props) {
     <div
       role="img"
       aria-label={`${label[kind]}: ${note}`}
-      className="placeholder-stripes relative flex w-full flex-col items-center justify-center gap-4 overflow-hidden border border-ivory/10 bg-charcoal/70 px-6 py-10 text-center"
+      className="placeholder-stripes relative flex w-full flex-col items-center justify-center gap-3 overflow-hidden border border-mist/40 bg-charcoal px-5 py-10 text-center"
       style={aspect ? { aspectRatio: aspect } : undefined}
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_120%,color-mix(in_srgb,var(--color-blood)_22%,transparent),transparent_60%)]" />
-      <span className="relative font-ui text-[0.62rem] tracking-[0.34em] text-crimson uppercase">{label[kind]}</span>
-      <span className="relative max-w-md font-ui text-xs leading-relaxed text-ivory/55">{note}</span>
-      {children && <div className="relative mt-2 w-full">{children}</div>}
+      <span className="text-ui font-medium text-ivory">{label[kind]}</span>
+      <span className="text-ui max-w-lg text-muted">{note}</span>
+      {children && <div className="mt-3 w-full">{children}</div>}
     </div>
   )
 }

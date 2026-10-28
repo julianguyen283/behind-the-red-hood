@@ -22,7 +22,8 @@ If a change breaks the build, Vercel keeps the previous version online and marks
 | Story | `src/content/story.md` | One blank line between paragraphs. `*word*` makes italics. A line starting with `>` is set apart and centred. Straight quotes become curly quotes automatically. |
 | Closing lines | `src/content/ending.md` | Same rules |
 | Title, subtitle, your name, content note | `src/content/site.ts` | Change only the text inside the quotes `'…'` |
-| Line shown when the intro film ends | `src/content/site.ts` → `introEndLine` | Set it to `''` to hide it |
+| The three lines over the opening film, and when they appear | `src/content/media.ts` → `textCues` | `start` and `end` are in seconds |
+| Audio transcript and the "Listen at the door" label | `src/content/media.ts` → `audio-1` | |
 | Credits | `src/content/site.ts` → `credits` | Remove `pending: true` once an item is complete, and its red highlight disappears |
 
 **Apostrophes in `site.ts` and `media.ts`:** the text there sits inside single quotes, so write `\'` (for example `'Grandmother\'s room'`), or use a curly apostrophe `’`. This doesn't apply to the `.md` story files.
@@ -31,7 +32,7 @@ If a change breaks the build, Vercel keeps the previous version online and marks
 
 1. On GitHub, go to the right folder inside `public/media/` (`images`, `video`, `audio` or `captions`).
 2. Click **Add file → Upload files**.
-3. Upload with **exactly** the filename listed in `public/media/README.md`, for example `illustration-1.jpg`.
+3. Upload with **exactly** the filename listed in `public/media/README.md`, for example `illustration-1.webp`. Convert images to WebP at <https://squoosh.app>, quality about 75.
 
 The placeholder is replaced automatically. Then, in `src/content/media.ts`:
 
@@ -43,13 +44,21 @@ The placeholder is replaced automatically. Then, in `src/content/media.ts`:
 
 **Captions** are `.vtt` text files. Copy `public/media/captions/intro.vtt` as a pattern: each cue is a time range `00:00:05.000 --> 00:00:10.000` followed by its text.
 
+**Markers in `story.md`:**
+- `[[mood:bedroom]]` sets where the background starts shifting to a scene's colour.
+- `[[reveal:off]]` and `[[reveal:on]]` mark the climax, which appears with no fade.
+- `[[thread-end]]` sits inside the hood paragraph, at the exact point where the red thread stops.
+
+If you paste in a new version of the story, keep these markers in the same places.
+
 **Moving media within the story:** in `story.md`, cut a marker line such as `[[image:image-1]]` and paste it between two other paragraphs, keeping a blank line on each side.
 
 ## Colours, fonts and layout
 
 Everything is in `src/content/theme.css`, with a comment on each line:
 
-- **Colours:** `--color-crimson`, `--color-void` (background), `--color-ivory` (text), the forest tones and the rest.
+- **Colours:** `--color-void` (background), `--color-ivory` (story text), `--color-muted` (small text), `--color-blood` (red thread and play buttons) and the rest. The contrast of each colour is noted beside it. Keep red off normal-size text.
+- **Background by scene:** `--color-mood-forest`, `--color-mood-kitchen`, `--color-mood-bedroom` and `--color-mood-night`.
 - **Story text size, line spacing, indent and column width:** `--story-size`, `--story-leading`, `--story-indent`, `--story-width`.
 
 Changing a colour value, such as `#c53242`, updates it everywhere on the site.

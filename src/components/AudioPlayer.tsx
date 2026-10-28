@@ -1,24 +1,17 @@
 import { useRef, useState } from 'react'
 import type { AudioMedia } from '../content/media'
-import { useDuck } from '../hooks/useAmbientSound'
 import { PauseIcon, PlayIcon } from './Icons'
 import { Inline } from './Inline'
-import { MediaPlaceholder } from './MediaPlaceholder'
-
-const BARS = 48
 
 /**
- * A listening moment: the reader chooses to hear the voice themselves.
- * The transcript is always available beneath the player.
+ * "Listen at the door": a small box the reader may use or skip.
+ * Never autoplays; the transcript is always available below.
  */
 export function AudioPlayer({ media }: { media: AudioMedia }) {
   const audio = useRef<HTMLAudioElement>(null)
   const [missing, setMissing] = useState(false)
   const [playing, setPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [open, setOpen] = useState(false)
-
-  useDuck(playing)
 
   const toggle = () => {
     const a = audio.current
@@ -27,10 +20,8 @@ export function AudioPlayer({ media }: { media: AudioMedia }) {
     else a.pause()
   }
 
-  const transcriptId = `${media.src}-transcript`
-
   return (
-    <div className="mx-auto w-full max-w-xl">
+    <div className="mx-auto w-full max-w-md bg-charcoal p-5 md:p-6">
       <audio
         ref={audio}
         src={media.src}
@@ -42,54 +33,38 @@ export function AudioPlayer({ media }: { media: AudioMedia }) {
         onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime / (e.currentTarget.duration || 1))}
       />
 
-      {missing ? (
-        <MediaPlaceholder kind="audio" note={media.placeholderNote} />
-      ) : (
-        <div className="flex items-center gap-5 border-y border-ivory/10 py-5">
-          <button
-            type="button"
-            onClick={toggle}
-            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-ivory/30 text-ivory transition-colors duration-700 hover:border-crimson hover:text-crimson"
-            aria-label={`${playing ? 'Pause' : 'Listen'}: ${media.title}`}
-          >
-            {playing ? <PauseIcon /> : <PlayIcon />}
-          </button>
-          {/* static waveform; bars fill crimson as the recording plays */}
-          <div className="flex h-10 flex-1 items-center gap-[3px]" aria-hidden="true">
-            {Array.from({ length: BARS }, (_, i) => {
-              const h = 18 + Math.abs(Math.sin(i * 1.7) * 60 + Math.sin(i * 0.43) * 22)
-              return (
-                <span
-                  key={i}
-                  className={`flex-1 rounded-full transition-colors duration-300 ${i / BARS < progress ? 'bg-crimson' : 'bg-ivory/20'}`}
-                  style={{ height: `${Math.min(h, 100)}%` }}
-                />
-              )
-            })}
-          </div>
-        </div>
-      )}
-
-      <div className="mt-3 flex items-baseline justify-between gap-4 font-ui text-[0.68rem] tracking-[0.2em] text-ivory/50 uppercase">
-        <span>{media.title}</span>
+      <div className="flex items-center gap-4">
         <button
           type="button"
-          onClick={() => setOpen((o) => !o)}
-          aria-expanded={open}
-          aria-controls={transcriptId}
-          className="shrink-0 underline decoration-ivory/20 underline-offset-4 hover:text-crimson"
+          onClick={toggle}
+          disabled={missing}
+          aria-label={playing ? 'Pause the voice from the bedroom' : media.buttonLabel}
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blood text-ivory transition-transform duration-300 hover:scale-105 disabled:opacity-40"
         >
-          {open ? 'Hide transcript' : 'Transcript'}
+          {playing ? <PauseIcon /> : <PlayIcon />}
         </button>
+        <div className="min-w-0 flex-1">
+          <p className="text-ui text-ivory">{media.label}</p>
+          <div className="mt-2 h-px w-full bg-mist/50" aria-hidden="true">
+            <div className="h-px bg-ivory/80" style={{ width: `${progress * 100}%` }} />
+          </div>
+        </div>
       </div>
-      <div id={transcriptId} hidden={!open} className="mt-4 space-y-2 border-l border-blood/60 pl-4 font-story text-lg text-ivory/75 [&_em]:text-ivory/50 [&_p]:!indent-0">
-        {media.transcript.map((line, i) => (
-          <p key={i}>
-            <Inline text={line} />
-          </p>
-        ))}
-      </div>
-      {media.credit && <p className="mt-3 font-ui text-[0.65rem] text-ivory/35">{media.credit}</p>}
+
+      {missing && <p className="text-ui mt-3 text-muted">Audio placeholder: {media.placeholderNote}</p>}
+
+      <details className="group mt-4">
+        <summary className="text-ui cursor-pointer text-muted underline decoration-mist underline-offset-4 hover:text-ivory">
+          Read transcript
+        </summary>
+        <div className="mt-3 space-y-2 font-story text-[1.0625rem] leading-relaxed text-ivory [&_em]:text-muted">
+          {media.transcript.map((line, i) => (
+            <p key={i} className="!indent-0">
+              <Inline text={line} />
+            </p>
+          ))}
+        </div>
+      </details>
     </div>
   )
 }

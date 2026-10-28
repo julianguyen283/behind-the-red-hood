@@ -1,49 +1,42 @@
-import { useRef, useState } from 'react'
-import { storyMedia, type ImageMedia, type VideoMedia } from '../content/media'
+import { useRef, useState, type CSSProperties } from 'react'
+import { storyMedia, type ImageMedia } from '../content/media'
 import { AudioPlayer } from './AudioPlayer'
 import { MediaPlaceholder } from './MediaPlaceholder'
 import { Reveal } from './Reveal'
 import { VideoPlayer } from './VideoPlayer'
 
-function Caption({ caption, credit }: { caption?: string; credit?: string }) {
-  if (!caption && !credit) return null
-  return (
-    <figcaption className="mx-auto mt-5 max-w-[34rem] px-4 text-center">
-      {caption && <span className="block font-story text-base text-ivory/65 italic">{caption}</span>}
-      {credit && <span className="mt-2 block font-ui text-[0.62rem] tracking-[0.12em] text-ivory/35">{credit}</span>}
-    </figcaption>
-  )
-}
+const MOBILE = '(max-width: 767px)'
 
-function StoryImage({ media }: { media: ImageMedia }) {
+/** Illustration with an optional phone crop and an optional full-screen view. */
+export function StoryImage({ media }: { media: ImageMedia }) {
+  // If the phone crop is missing, fall back to the main image before giving up.
+  const [useMobile, setUseMobile] = useState(Boolean(media.srcMobile))
   const [missing, setMissing] = useState(false)
   const dialog = useRef<HTMLDialogElement>(null)
+
+  const onError = () => (useMobile ? setUseMobile(false) : setMissing(true))
   if (missing) return <MediaPlaceholder kind="image" note={media.placeholderNote} aspect={media.aspect} />
 
-  const image = (
-    <>
-      <img src={media.src} alt={media.alt} loading="lazy" decoding="async" onError={() => setMissing(true)} className="h-full w-full object-cover" />
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 shadow-[inset_0_0_100px_30px_color-mix(in_srgb,var(--color-void)_70%,transparent)]" />
-    </>
+  const picture = (
+    <picture>
+      {useMobile && media.srcMobile && <source media={MOBILE} srcSet={media.srcMobile} />}
+      <img src={media.src} alt={media.alt} loading="lazy" decoding="async" onError={onError} className="h-full w-full object-cover" />
+    </picture>
   )
-  if (!media.enlarge) {
-    return (
-      <div className="relative overflow-hidden bg-charcoal" style={{ aspectRatio: media.aspect }}>
-        {image}
-      </div>
-    )
-  }
+  // Phones use the crop's ratio (if a crop exists); larger screens the main ratio.
+  const frame = 'relative block w-full overflow-hidden bg-charcoal aspect-[var(--ratio-m)] md:aspect-[var(--ratio-d)]'
+  const frameStyle = {
+    '--ratio-d': media.aspect,
+    '--ratio-m': useMobile && media.aspectMobile ? media.aspectMobile : media.aspect,
+  } as CSSProperties
+
+  if (!media.enlarge) return <div className={frame} style={frameStyle}>{picture}</div>
+
   return (
     <>
-      <button
-        type="button"
-        onClick={() => dialog.current?.showModal()}
-        className="group relative block w-full cursor-zoom-in overflow-hidden bg-charcoal"
-        style={{ aspectRatio: media.aspect }}
-        aria-label="Enlarge illustration"
-      >
-        {image}
-        <span className="absolute right-3 bottom-3 font-ui text-[0.6rem] tracking-[0.3em] text-ivory/60 uppercase opacity-80 transition-opacity group-hover:opacity-100 md:opacity-0 md:group-focus-visible:opacity-100">
+      <button type="button" onClick={() => dialog.current?.showModal()} className={`group cursor-zoom-in ${frame}`} style={frameStyle} aria-label="Enlarge illustration">
+        {picture}
+        <span className="text-ui absolute right-3 bottom-3 bg-void/70 px-2 py-0.5 text-ivory opacity-90 md:opacity-0 md:group-hover:opacity-100 md:group-focus-visible:opacity-100">
           Enlarge
         </span>
       </button>
@@ -51,7 +44,7 @@ function StoryImage({ media }: { media: ImageMedia }) {
       <dialog
         ref={dialog}
         onClick={(e) => e.target === e.currentTarget && dialog.current?.close()}
-        className="m-auto max-h-none max-w-none bg-transparent p-0 backdrop:bg-[rgb(8_8_11/0.96)]"
+        className="m-auto max-h-none max-w-none bg-transparent p-0 backdrop:bg-[rgb(10_9_10/0.96)]"
       >
         <div className="relative flex h-[100svh] w-screen items-center justify-center p-4 md:p-10">
           <img src={media.src} alt={media.alt} className="max-h-full max-w-full object-contain" />
@@ -59,7 +52,7 @@ function StoryImage({ media }: { media: ImageMedia }) {
             type="button"
             onClick={() => dialog.current?.close()}
             autoFocus
-            className="absolute top-4 right-4 border border-ivory/30 bg-void/60 px-4 py-2 font-ui text-[0.62rem] tracking-[0.3em] text-ivory uppercase hover:border-crimson"
+            className="text-ui absolute top-4 right-4 border border-mist bg-void/70 px-4 py-2 text-ivory hover:border-ivory"
           >
             Close
           </button>
@@ -69,27 +62,9 @@ function StoryImage({ media }: { media: ImageMedia }) {
   )
 }
 
-function StoryVideo({ media }: { media: VideoMedia }) {
-  return (
-    <>
-      <VideoPlayer {...media} mode="loop" />
-      {media.description && (
-        <p className="mx-auto mt-4 max-w-[34rem] px-4 text-center font-ui text-[0.7rem] leading-relaxed text-ivory/45">
-          <span className="sr-only">Video description: </span>
-          {media.description}
-        </p>
-      )}
-    </>
-  )
-}
+const width = { image: 'max-w-6xl', video: 'max-w-3xl', audio: 'max-w-md' }
 
-const width: Record<string, string> = {
-  image: 'max-w-4xl',
-  video: 'max-w-6xl',
-  audio: 'max-w-[38rem]',
-}
-
-/** A story media block, breaking out of the text column at a turning point. */
+/** A story media block, placed after the line named in story.md. */
 export function StoryMedia({ id }: { id: string }) {
   const media = storyMedia[id]
   if (!media) {
@@ -97,11 +72,11 @@ export function StoryMedia({ id }: { id: string }) {
     return null
   }
   return (
-    <Reveal as="figure" rise={28} className={`mx-auto my-20 w-full md:my-32 ${width[media.kind]}`}>
+    <Reveal as="figure" className={`mx-auto my-16 w-full empty:hidden md:my-24 ${width[media.kind]}`}>
       {media.kind === 'image' && <StoryImage media={media} />}
-      {media.kind === 'video' && <StoryVideo media={media} />}
+      {media.kind === 'video' && <VideoPlayer {...media} />}
       {media.kind === 'audio' && <AudioPlayer media={media} />}
-      {media.kind !== 'audio' && <Caption caption={media.caption} credit={media.credit} />}
+      {media.kind === 'image' && media.caption && <figcaption className="text-ui mt-4 text-center text-muted">{media.caption}</figcaption>}
     </Reveal>
   )
 }
