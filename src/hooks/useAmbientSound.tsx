@@ -16,8 +16,8 @@ type SoundState = {
 
 const SoundContext = createContext<SoundState>({ enabled: false, toggle: () => {}, setDucked: () => {}, setScene: () => {}, playCall: () => {}, playSfx: () => {} })
 
-/** Background level when sound is on (0–1). ~12%: atmosphere, never in the way. */
-const LEVEL = 0.12
+/** Background level when sound is on (0–1). ~15%: atmosphere, never in the way. */
+const LEVEL = 0.15
 /** Level while a video or the narration plays with sound. ~4%. */
 const DUCKED = 0.04
 const FADE_IN = 2.5 // seconds
