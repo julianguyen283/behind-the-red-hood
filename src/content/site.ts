@@ -33,12 +33,11 @@ export const credits: CreditGroup[] = [
     heading: 'Creative Authorship',
     items: [
       { label: 'Story', value: 'Thi Thuy Dung Nguyen (Julia)' },
-      { label: 'Concept & art direction', value: '[Your Name]', pending: true },
+      { label: 'Concept & art direction', value: 'Thi Thuy Dung Nguyen (Julia)' },
       {
         label: 'Website',
         value:
-          'Designed and built in React, TypeScript, Vite, Tailwind CSS and Motion, with AI coding assistance (Claude, Anthropic). [Describe your own role in directing and editing it.]',
-        pending: true,
+          'Concept by Thi Thuy Dung Nguyen (Julia); built in React, TypeScript, Vite, Tailwind CSS and Motion with AI coding assistance (Claude, Anthropic).',
       },
       {
         label: 'Source tale',
