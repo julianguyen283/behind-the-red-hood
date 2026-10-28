@@ -46,6 +46,18 @@ The placeholder is replaced automatically. Then, in `src/content/media.ts`:
 
 **Moving media within the story:** in `story.md`, cut a marker line such as `[[image:image-1]]` and paste it between two other paragraphs, keeping a blank line on each side.
 
+## The bedroom scene, the lamplight and the soundscape
+
+These are all controlled by markers in `src/content/story.md`. Each marker sits on its own line.
+
+| Marker | What it does |
+|---|---|
+| `[[room:start]]` … `[[room:end]]` | Between these, the bedroom picture stays on screen behind the text. |
+| `[[light:lamp]]`, `[[light:head]]`, `[[light:spectacles]]`, `[[light:all]]`, `[[light:out]]` | Moves the pool of lamplight, in a short gap between passages. The positions are in `src/content/media.ts` under `room.lights`. |
+| `[[room:pause]]` | An open gap with no text, where the whole room can be seen. |
+| `[[scene:kitchen]]`, `[[scene:bedroom1]]`, `[[scene:bedroom2]]`, `[[scene:bedroom3]]`, `[[scene:silence]]`, `[[scene:night]]` | Cross-fades the background sound. This only happens when Sound is on. The mixes are in `media.ts` under `soundscape`. |
+| `[[call]]` (in `ending.md`) | After a pause, plays the faint "…child?" once, only if Sound is on. |
+
 ## Background sound
 
 The **Sound on / Sound off** button plays `public/media/audio/ambience.mp3` on a loop.

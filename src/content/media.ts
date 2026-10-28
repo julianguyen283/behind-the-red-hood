@@ -143,3 +143,51 @@ export const storyMedia: Record<string, ImageMedia | VideoMedia | AudioMedia> = 
  * browser with the Web Audio API instead.
  */
 export const ambientAudioSrc = v('/media/audio/ambience.mp3')
+
+/**
+ * THE BEDROOM SCENE
+ * Between [[room:start]] and [[room:end]] in story.md, Illustration 1 stays
+ * fixed behind the text and a lamp-light moves to whatever Red is looking at.
+ * A [[light:name]] marker moves the light to one of these spots.
+ *   x, y    position in the picture (0–1, from the left / top)
+ *   radius  size of the pool of light (fraction of the picture's width)
+ *   dark    how dark everything outside the light is (0 = none, 1 = black)
+ */
+export const room = {
+  src: v('/media/images/illustration-1.webp'),
+  alt: 'A small bedroom seen from the doorway, lit by one lamp turned very low. A figure lies in the bed against the far wall, face hidden under a nightcap. A dresser, a low window and a tall wardrobe stand in shadow.',
+  width: 1536,
+  height: 1024,
+  lights: {
+    lamp: { x: 0.11, y: 0.4, radius: 0.15, dark: 0.9 },
+    head: { x: 0.51, y: 0.31, radius: 0.12, dark: 0.9 },
+    all: { x: 0.5, y: 0.5, radius: 1.3, dark: 0.15 },
+    spectacles: { x: 0.68, y: 0.4, radius: 0.08, dark: 0.92 },
+    out: { x: 0.11, y: 0.4, radius: 0, dark: 0.97 },
+  } as Record<string, { x: number; y: number; radius: number; dark: number }>,
+}
+
+/**
+ * SOUNDSCAPE (only when the reader turns Sound on)
+ * Each loop plays continuously; a [[scene:name]] marker in story.md or
+ * ending.md cross-fades to that scene's mix (levels 0–1 per loop).
+ */
+export const soundscape = {
+  loops: {
+    forest: v('/media/audio/ambience.mp3'),
+    kitchen: v('/media/audio/kitchen.mp3'),
+    bedroom: v('/media/audio/bedroom.mp3'),
+    night: v('/media/audio/night.mp3'),
+  } as Record<string, string>,
+  scenes: {
+    forest: { forest: 1 },
+    kitchen: { kitchen: 1 },
+    bedroom1: { kitchen: 0.4, bedroom: 0.5 },
+    bedroom2: { bedroom: 0.8 },
+    bedroom3: { bedroom: 1 },
+    silence: {},
+    night: { night: 1 },
+  } as Record<string, Record<string, number>>,
+  /** The faint call after the last line ([[call]] in ending.md). */
+  call: v('/media/audio/child-call.mp3'),
+}

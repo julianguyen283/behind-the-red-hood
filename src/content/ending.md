@@ -5,4 +5,8 @@
 
 Somewhere behind me, patient among the trees, a voice called me child.
 
+[[scene:silence]]
+
 > For the first time in my life, I did not answer when I was called.
+
+[[call]]

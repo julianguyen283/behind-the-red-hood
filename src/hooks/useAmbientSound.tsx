@@ -1,14 +1,18 @@
 import { createContext, useCallback, useContext, useEffect, useId, useRef, useState, type ReactNode } from 'react'
-import { ambientAudioSrc } from '../content/media'
+import { soundscape } from '../content/media'
 
 type SoundState = {
   enabled: boolean
   toggle: () => void
   /** Lower the ambience while any media element is playing with sound. */
   setDucked: (source: string, ducked: boolean) => void
+  /** Cross-fade the soundscape to one of soundscape.scenes. */
+  setScene: (name: string) => void
+  /** Play the faint call after the last line (only if sound is on). */
+  playCall: () => void
 }
 
-const SoundContext = createContext<SoundState>({ enabled: false, toggle: () => {}, setDucked: () => {} })
+const SoundContext = createContext<SoundState>({ enabled: false, toggle: () => {}, setDucked: () => {}, setScene: () => {}, playCall: () => {} })
 
 /** Background level when sound is on (0–1). ~12%: atmosphere, never in the way. */
 const LEVEL = 0.12
@@ -72,6 +76,21 @@ export function SoundProvider({ children }: { children: ReactNode }) {
   const starting = useRef<Promise<void> | null>(null)
   const duckers = useRef(new Set<string>())
   const enabledRef = useRef(false)
+  const layers = useRef(new Map<string, GainNode>())
+  const scene = useRef('forest')
+
+  /** Fade every loop to the level the scene asks for. */
+  const mixScene = useCallback((name: string, seconds: number) => {
+    const ctx = ctxRef.current
+    if (!ctx) return
+    const mixLevels = soundscape.scenes[name] ?? {}
+    const now = ctx.currentTime
+    layers.current.forEach((gain, loop) => {
+      gain.gain.cancelScheduledValues(now)
+      gain.gain.setValueAtTime(gain.gain.value, now)
+      gain.gain.linearRampToValueAtTime(mixLevels[loop] ?? 0, now + seconds)
+    })
+  }, [])
 
   const ramp = useCallback((to: number, seconds: number) => {
     const ctx = ctxRef.current
@@ -98,16 +117,24 @@ export function SoundProvider({ children }: { children: ReactNode }) {
 
       // Everything up to the first await runs inside the click itself,
       // which iOS Safari requires before it will play any audio.
-      const audio = new Audio(ambientAudioSrc)
-      audio.loop = true
-      ctx.createMediaElementSource(audio).connect(master) // silent until master fades up
+      const first = soundscape.scenes[scene.current] ?? {}
+      const plays = Object.entries(soundscape.loops).map(([loop, src]) => {
+        const audio = new Audio(src)
+        audio.loop = true
+        const gain = ctx.createGain()
+        gain.gain.value = first[loop] ?? 0
+        gain.connect(master)
+        ctx.createMediaElementSource(audio).connect(gain) // silent until master fades up
+        layers.current.set(loop, gain)
+        return audio.play().then(
+          () => true,
+          () => false,
+        )
+      })
       const resumed = ctx.resume()
-      const ok = await audio.play().then(
-        () => true,
-        () => false,
-      )
+      const [forestOk] = await Promise.all(plays)
       await resumed
-      if (!ok) createWind(ctx, master) // no ambience file: use the built-in wind
+      if (!forestOk) createWind(ctx, layers.current.get('forest') ?? master) // no ambience file: built-in wind
     })()
     return starting.current
   }, [])
@@ -172,7 +199,27 @@ export function SoundProvider({ children }: { children: ReactNode }) {
     [ramp],
   )
 
-  return <SoundContext.Provider value={{ enabled, toggle, setDucked }}>{children}</SoundContext.Provider>
+  const setScene = useCallback(
+    (name: string) => {
+      if (name === scene.current) return
+      scene.current = name
+      // silence falls fast (the lamp is thrown); everything else drifts in
+      mixScene(name, name === 'silence' ? 0.4 : 3)
+    },
+    [mixScene],
+  )
+
+  const playCall = useCallback(() => {
+    const ctx = ctxRef.current
+    if (!ctx || !enabledRef.current) return
+    const audio = new Audio(soundscape.call)
+    const gain = ctx.createGain()
+    gain.gain.value = 0.45 // faint, and outside the ambience level so it can still be heard
+    ctx.createMediaElementSource(audio).connect(gain).connect(ctx.destination)
+    void audio.play().catch(() => {})
+  }, [])
+
+  return <SoundContext.Provider value={{ enabled, toggle, setDucked, setScene, playCall }}>{children}</SoundContext.Provider>
 }
 
 export const useAmbientSound = () => useContext(SoundContext)

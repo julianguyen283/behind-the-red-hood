@@ -12,6 +12,10 @@
     • * * *                     → a quiet pause ornament (not a chapter break)
     • [[audio:audio-1]] [[image:image-1]]
                                 → media (configure in src/content/media.ts)
+    • [[room:start]] … [[room:end]]  → the bedroom stays on screen behind the text;
+      [[light:lamp|head|spectacles|all|out]] moves the lamplight (media.ts → room);
+      [[room:pause]] leaves an open gap where the whole room can be seen
+    • [[scene:name]]          → cross-fades the soundscape (media.ts → soundscape)
     • [[thread-end]]         → inside a paragraph: the exact point where the
                                red thread stops (the hood is torn away)
     • [[sense:ears]] / [[sense:eyes]] / [[sense:teeth]]
@@ -28,6 +32,8 @@ I stayed on the step with the basket against my hip, waiting for her voice. Gran
 
 No smoke rose from the chimney. I went in, because she was ill, because it was cold, and because my mother had sent me with bread and plum preserve and told me not to dawdle.
 
+[[scene:kitchen]]
+
 In the grey light from the kitchen window, the room looked as though she had stepped out of it a moment ago and never come back. The fire had been dead for hours. Her chair stood away from the table, as if she had risen in a hurry, and her shawl lay on the floor beside it. Her knitting waited on the table with the needles still through a half-finished row, the way she left it when she meant to return at once. Beneath the old smells of tallow and lavender there was a sweet, heavy smell, like fruit left too long in a bowl. I picked up the shawl and folded it over the chair-back, because she hated things left on the floor, and because folding it made the kitchen look a little more like hers.
 
 At the far end of the room the bedroom door stood half open, and a thread of lamplight lay across the boards.
@@ -37,6 +43,12 @@ Then she spoke to me from the bedroom.
 [[audio:audio-1]]
 
 It was her voice, nearly. And it had not called me lark. Illness thickens a voice, I told myself, and a fever makes the old forget the names they have used for years. I crossed the kitchen, nudged the bedroom door wider with my shoulder, and stopped on the threshold.
+
+[[room:start]]
+
+[[scene:bedroom1]]
+
+[[light:lamp]]
 
 The room was small and close. Against the far wall, Grandmother lay with the quilt drawn up to her chin and her nightcap pulled down, so that she was only a darker dark against the pillows. To my left, an arm's length inside the door, the lamp stood on the dresser, turned down to a single bead of flame. I stepped in, and behind me the door drifted shut on the sloping floor, as it always had.
 
@@ -50,6 +62,10 @@ I very nearly went. My foot had moved before I made it stop.
 
 "Your mother would be hurt to see you hang back like this," she said, more softly. "After everything."
 
+[[scene:bedroom2]]
+
+[[light:head]]
+
 "Grandmother," I said, "what big ears you have."
 
 It had been our game when I was small: ears, then eyes, then teeth. She had her own answer for each, and the first was always "All the better to hear you sing, my lark," and then she would make me sing until I laughed too much to finish.
@@ -62,9 +78,17 @@ My face began to smile, the way it did when a man at market said something I did
 
 "You're standing there like a stranger," she said. "Be a good girl and come and sit with me."
 
-[[image:image-1]]
+[[light:all]]
+
+[[room:pause]]
+
+[[light:spectacles]]
 
 Her spectacles lay folded on the nightstand. Without them she could not read the almanac or find her own slippers, and yet the eyes beneath the nightcap followed each small movement I made. I wanted those eyes on my face and nowhere else.
+
+[[scene:bedroom3]]
+
+[[light:head]]
 
 "What big eyes you have," I said.
 
@@ -73,6 +97,8 @@ Her spectacles lay folded on the nightstand. Without them she could not read the
 "Then look at me." I turned a little, so the light would find my face. "Look how I've grown since summer."
 
 She looked. "You've grown sharp," she said at last. "Your mother never mentioned that."
+
+[[light:lamp]]
 
 While she was still looking, I slid my hand along the dresser, past the basket, until it touched the warm glass chimney of the lamp. Just beyond the dresser, in the same wall, at the height of my hip, was the window Grandfather had cut so that she could see the gate from her bed. I had sat in it as a little girl, kicking my heels against the wall, and I had been scolded more than once for forcing the latch when the wood swelled in wet weather.
 
@@ -88,6 +114,10 @@ So it knew. Perhaps it had known since I stopped on the threshold, and had only 
 
 I lifted the lamp by its chimney. The glass was hot enough to hurt. There was one question left in the game, and it had answered the other two the way the old rhyme goes, quickly and with pleasure, as if it had been waiting all evening to say them. It would want to say this one most of all.
 
+[[scene:silence]]
+
+[[light:out]]
+
 "Grandmother," I said, "what big teeth you have."
 
 "All the better—" it began, and the quilt came away.
@@ -97,6 +127,10 @@ What rose from the bed was too long for it. The nightcap slid aside, and the fac
 I threw the lamp. The chimney broke in my fist as it left me, and the rest burst on the boards between us. The spilled oil caught and ran in a thin line of flame, blue at the root. The thing from the bed came at it and flinched back, and came again along the wall, where the flame was thinnest. My palm was full of glass. I turned my back on it and threw my weight against the window.
 
 The latch would not lift. I struck it with the heel of my cut hand, once, twice, while the light jumped on the walls and the thing beyond the fire made a sound that was not a word. On the third blow the swollen wood gave. Cold air poured in, and I went through head first. Halfway out, something caught my skirt. The cloth drew tight, a long, tearing pain went down the back of my leg, and then the hem ripped free and I fell into the wet grass of the yard.
+
+[[room:end]]
+
+[[scene:night]]
 
 [[image:image-3]]
 

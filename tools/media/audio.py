@@ -214,10 +214,59 @@ def voice_bed(out):
     write(out, stereo(track, 0.95), peak=0.7)
 
 
+def seamless(mix, L, X):
+    """Crossfade the extra tail over the head so the clip loops without a seam."""
+    n, xn = int(L * SR), int(X * SR)
+    fade = np.linspace(0, 1, xn)
+    head = mix[:n].copy()
+    head[:xn] = head[:xn] * fade + mix[n : n + xn] * (1 - fade)
+    return head
+
+
+def kitchen(out):
+    """32 s loop: a held-breath room, a clock ticking very softly, the house settling."""
+    L, X = 32.0, 2.0
+    n = int((L + X) * SR)
+    track = 0.05 * fft_band(rng.standard_normal(n), 60, 400)
+    t = np.arange(int(0.05 * SR)) / SR
+    for k in range(int(L + X)):
+        f = 2400 if k % 2 else 1900  # tick, tock
+        click = np.sin(2 * np.pi * f * t) * np.exp(-t * 180) + 0.4 * np.sin(2 * np.pi * 600 * t) * np.exp(-t * 90)
+        place(track, click, k + 0.2, 0.09)
+    for at in [7.3, 21.8]:
+        place(track, creak(0.9, 30, 70, 600), at, 0.12)
+    write(out, stereo(seamless(track, L, X), 0.97), peak=0.5)
+
+
+def bedroom(out):
+    """30 s loop: slow breathing, too deep and too even, over a low drone."""
+    L, X = 30.0, 3.0
+    n = int((L + X) * SR)
+    track = 0.04 * fft_band(rng.standard_normal(n), 50, 350)
+    track += 0.12 * drone(L + X, 41.2)
+    at = 0.3
+    while at < L + X - 5:
+        b = breath(4.6, 1.0)
+        b = fft_band(b, 90, 900)  # darker than a small woman's breath
+        place(track, b, at, 0.6)
+        at += 5.8
+    write(out, stereo(seamless(track, L, X), 0.95), peak=0.75)
+
+
+def night(out):
+    """40 s loop: open wind at the forest edge."""
+    L, X = 40.0, 4.0
+    w = wind(L + X, 250, 2600, gust_rate=1 / 9) + 0.5 * wind(L + X, 90, 500, gust_rate=1 / 14)
+    write(out, stereo(seamless(w, L, X)), peak=0.85)
+
+
 if __name__ == '__main__':
     d = sys.argv[1]
     ambience(f'{d}/ambience.wav')
     intro(f'{d}/intro-audio.wav')
     video2(f'{d}/story-2-audio.wav')
     voice_bed(f'{d}/voice-bed.wav')
+    kitchen(f'{d}/kitchen.wav')
+    bedroom(f'{d}/bedroom.wav')
+    night(f'{d}/night.wav')
     print('audio done')

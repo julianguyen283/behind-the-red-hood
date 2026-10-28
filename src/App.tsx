@@ -8,6 +8,7 @@ import { Story, storyBlocks } from './components/Story'
 import { Ending, endingBlocks } from './components/Ending'
 import { Credits } from './components/Credits'
 import { RedThread } from './components/RedThread'
+import { SceneController } from './components/SceneController'
 import { DevWordCount } from './components/DevWordCount'
 
 export default function App() {
@@ -29,6 +30,7 @@ export default function App() {
         <a href="#story" className="sr-only z-50 bg-ivory px-4 py-2 font-ui text-sm text-void focus:not-sr-only focus:fixed focus:top-3 focus:left-3">
           Skip to the story
         </a>
+        <SceneController />
         <Header />
         <main id="top" className="relative">
           <RedThread />
