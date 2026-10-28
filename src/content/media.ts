@@ -51,7 +51,7 @@ export type AudioMedia = {
  * Bump this number whenever you replace a media file with one of the same
  * name, so browsers fetch the new file instead of a cached old one.
  */
-export const MEDIA_VERSION = 5
+export const MEDIA_VERSION = 6
 const v = (path: string) => `${path}?v=${MEDIA_VERSION}`
 
 export const introVideo: VideoMedia = {
