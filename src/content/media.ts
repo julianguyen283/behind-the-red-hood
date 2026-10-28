@@ -113,18 +113,6 @@ export const storyMedia: Record<string, ImageMedia | VideoMedia | AudioMedia> = 
     enlarge: true,
     placeholderNote: 'Illustration 1 → /public/media/images/illustration-1.webp',
   },
-  // What Red does not turn round to see: revealed only as the reader scrolls on.
-  'image-3': {
-    kind: 'image',
-    src: v('/media/images/illustration-3.webp'),
-    alt: 'The bedroom after Red has gone: the window stands wide open and a pale curtain blows inward; a thin blue flame burns low along spilled oil beside a fallen lamp; the quilt is dragged half off the bed; in the corner, a tall wardrobe stands open onto darkness.',
-    caption: '',
-    credit: '',
-    aspect: '3 / 2',
-    enlarge: true,
-    lookBack: true,
-    placeholderNote: 'Illustration 3 → /public/media/images/illustration-3.webp',
-  },
   'image-2': {
     kind: 'image',
     src: v('/media/images/illustration-2.webp'),

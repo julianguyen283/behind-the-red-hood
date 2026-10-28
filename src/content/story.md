@@ -132,7 +132,6 @@ The latch would not lift. I struck it with the heel of my cut hand, once, twice,
 
 [[scene:night]]
 
-[[image:image-3]]
 
 
 My leg would not take my weight properly. I ran anyway, half stumbling. At the edge of the yard the brambles took my stockings and then my hood; it snagged and pulled at my throat, and I tore the clasp open and left it hanging behind me, red on the black thorns.[[thread-end]] I did not know whether Grandmother was in that house. I did not know whether the fire had held, or for how long. I knew only the way to the village and the sound of my own breath.

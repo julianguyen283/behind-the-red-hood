@@ -78,7 +78,7 @@ export function RoomScene({ children }: { children: ReactNode }) {
         <div className="absolute inset-x-0 top-0 h-[18svh] bg-gradient-to-b from-void to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-[18svh] bg-gradient-to-t from-void to-transparent" />
       </div>
-      <div className="relative z-10 -mt-[100svh] px-4 pt-[75svh] pb-[70svh] sm:px-8">{children}</div>
+      <div className="relative z-10 -mt-[100svh] px-4 pt-[75svh] pb-[45svh] sm:px-8">{children}</div>
     </section>
   )
 }
